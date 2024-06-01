@@ -19,12 +19,24 @@ app.use(cors({
     optionsSuccessStatus: 200,
 }));
 
-const staticAppPath = path.join(__dirname, './web');
+const staticAppPath = path.join(__dirname, './build');
 
 console.log(staticAppPath);
 
 app.use(express.static(staticAppPath));
 app.use(express.json());
+
+app.get('/next', async (req, res) => {
+    const url = process.env.PROPRESENTER_API_URL;
+    console.log(`The API url (next): ${url}`);
+    await fetch(`${url}/v1/trigger/next`, { method: 'GET' });
+});
+
+app.get('/prev', async (req, res) => {
+    const url = process.env.PROPRESENTER_API_URL;
+    console.log(`The API url (prev): ${url}`);
+    await fetch(`${url}/v1/trigger/previous`, { method: 'GET' });
+});
 
 app.use((err, _req, res, next) => {
     res.status(500).send("Unexpected error occured.");

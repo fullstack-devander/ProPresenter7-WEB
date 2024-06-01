@@ -4,10 +4,6 @@ import logo from './LOGO.png';
 import React, { useState, useEffect } from 'react';
 
 function App() {
-  const proPresenterAddress = "http://10.120.6.58:1025/";
-  const nextCueUrl = proPresenterAddress + "v1/trigger/next";
-  const prevCueUrl = proPresenterAddress + "v1/trigger/previous";
-
   const [slide, setSlide] = useState(null);
 
   useEffect(() => {
@@ -16,14 +12,16 @@ function App() {
 
   async function previousCue() {
     console.log("PREVIOUS");
-    await fetch(prevCueUrl, {
+    const url = window.location.host;
+    await fetch(`/prev`, {
       method: 'GET'
     });
   }
 
   async function nextCue() {
     console.log("NEXT CUE");
-    await fetch(nextCueUrl, {
+    const url = `${window.location.host}/next`;
+    await fetch('/next', {
       method: 'GET'
     });
   }
