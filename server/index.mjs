@@ -26,6 +26,11 @@ console.log(staticAppPath);
 app.use(express.static(staticAppPath));
 app.use(express.json());
 
+app.get('/playlists', async (req, res) => {
+    const playlists = await fetch(`${process.env.PROPRESENTER_API_URL}/v1/playlists`, { method: 'GET' });
+    res.send(playlists).status(200);
+});
+
 app.get('/next', async (req, res) => {
     const url = process.env.PROPRESENTER_API_URL;
     console.log(`The API url (next): ${url}`);
