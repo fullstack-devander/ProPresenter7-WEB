@@ -27,20 +27,24 @@ app.use(express.static(staticAppPath));
 app.use(express.json());
 
 app.get('/playlists', async (req, res) => {
-    const playlists = await fetch(`${process.env.PROPRESENTER_API_URL}/v1/playlists`, { method: 'GET' });
+    console.log('res')
+    const response = await fetch(`${process.env.PROPRESENTER_API_URL}/v1/playlists`, { method: 'GET' });
+    const playlists = await response.json();
     res.send(playlists).status(200);
 });
 
+app.get('/presentations', async (req, res) => {
+    // TODO: Fetch and return presentations;
+});
+
 app.get('/next', async (req, res) => {
-    const url = process.env.PROPRESENTER_API_URL;
     console.log(`The API url (next): ${url}`);
-    await fetch(`${url}/v1/trigger/next`, { method: 'GET' });
+    await fetch(`${process.env.PROPRESENTER_API_URL}/v1/trigger/next`, { method: 'GET' });
 });
 
 app.get('/prev', async (req, res) => {
-    const url = process.env.PROPRESENTER_API_URL;
     console.log(`The API url (prev): ${url}`);
-    await fetch(`${url}/v1/trigger/previous`, { method: 'GET' });
+    await fetch(`${process.env.PROPRESENTER_API_URL}/v1/trigger/previous`, { method: 'GET' });
 });
 
 app.use((err, _req, res, next) => {
