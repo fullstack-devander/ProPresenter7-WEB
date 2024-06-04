@@ -1,14 +1,22 @@
 import './App.css';
-import logo from './LOGO.png';
+import { Sidebar } from 'primereact/sidebar';
+import { Button } from 'primereact/button';
 
 import React, { useState, useEffect } from 'react';
 
 function App() {
   const [slide, setSlide] = useState(null);
+  const [isVisiblePlaylists, setIsVisiblePlaylists] = useState(false);
+  const [playlists, setPlaylists] = useState([]);
 
   useEffect(() => {
-    console.log("LOADED");
-  });
+    fetch('/playlists', { method: 'GET' }).then(res => res.json())
+      .then(playlists => {
+        console.log(playlists);
+        setPlaylists(playlists);
+      })
+      .finally(() => console.log("LOADED"));
+  }, []);
 
   async function previousCue() {
     console.log("PREVIOUS");
@@ -29,7 +37,10 @@ function App() {
   return (
     <div className="App" style={{padding: '32px 0'}}>
       <div>
-        <img src={logo} style={{width: '150px'}}/>
+        <Sidebar visible={isVisiblePlaylists} onHide={() => setIsVisiblePlaylists(false)}>
+          Playlists
+        </Sidebar>
+        <Button label="Playlists" onClick={() => setIsVisiblePlaylists(true)} />
       </div>
       <div style={{verticalAlign: 'bottom'}}>
         <div className='my-btn'>
