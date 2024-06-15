@@ -63,9 +63,7 @@ app.get('/presentation/:uuid/thumbnail/:index', async (req, res) => {
     const url = `${process.env.PROPRESENTER_API_URL}/v1/presentation/${req.params.uuid}/thumbnail/${req.params.index}`;
     console.log(url);
     const thumbnail = await fetch(url, { method: 'GET' });
-    console.log(thumbnail);
     const result = await thumbnail.blob().then(res => res.arrayBuffer());
-    console.log(result);
 
     res.set({
         'content-length': thumbnail.headers.get('content-length'),
@@ -75,45 +73,45 @@ app.get('/presentation/:uuid/thumbnail/:index', async (req, res) => {
     res.send(Buffer.from(result)).status(200);
 });
 
-app.get('/preview', async (req, res) => {
+app.get('/activeSlide', async (req, res) => {
     const slideIndexUrl = `${process.env.PROPRESENTER_API_URL}/v1/presentation/slide_index`;
     const slideIndexResponse = await fetch(slideIndexUrl, { method: 'GET' });
     const slideIndex = await slideIndexResponse.json();
 
-    console.log(slideIndex);
-    const presentationUuid = slideIndex.presentation_index.presentation_id.uuid;
-    const cueIndex = slideIndex.presentation_index.index;
-    
-    const thumbnailUrl = `${process.env.PROPRESENTER_API_URL}/v1/presentation/${presentationUuid}/thumbnail/${cueIndex}`;
-    const thumbnailResponse = await fetch(thumbnailUrl, { method: 'GET' });
-    const thumbnail = await thumbnailResponse.blob().then(res => res.arrayBuffer());
-    
-    res.set({
-        'content-length': thumbnailResponse.headers.get('content-length'),
-        'content-type': thumbnailResponse.headers.get('content-type'),
-    });
+    const result = {
+        presentationUuid: slideIndex.presentation_index.presentation_id.uuid,
+        slideIndex: slideIndex.presentation_index.index,
+    };
 
-    res.send(Buffer.from(thumbnail)).status(200);
+    console.log(result);
+
+    res.send(result).status(200);
 });
 
-// TODO: Obsolete; /preview should be used instead.
-app.get('/presentation/slide_index', async (req, res) => {
-    const url = `${process.env.PROPRESENTER_API_URL}/v1/presentation/slide_index`;
+app.get('/presentation/:uuid/:index/trigger', async (req, res) => {
+    const uuid = req.params.uuid;
+    const index = req.params.index;
+    
+    const url = `${process.env.PROPRESENTER_API_URL}/v1/presentation/${uuid}/${index}/trigger`;
     console.log(url);
-    const response = await fetch(url, { method: 'GET' });
-    const slideIndex = await response.json();
 
-    res.send(slideIndex).status(200);
+    await fetch(url, { method: 'GET' });
+
+    res.sendStatus(200);
 });
 
-app.get('/next', async (req, res) => {
-    console.log(`The API url (next): ${url}`);
-    await fetch(`${process.env.PROPRESENTER_API_URL}/v1/trigger/next`, { method: 'GET' });
+app.get('/trigger/next', async (req, res) => {
+    const url = `${process.env.PROPRESENTER_API_URL}/v1/trigger/next`;
+    console.log(url);
+    
+    await fetch(url, { method: 'GET' });
 });
 
-app.get('/prev', async (req, res) => {
+app.get('/trigger/prev', async (req, res) => {
+    const url = `${process.env.PROPRESENTER_API_URL}/v1/trigger/previous`;
     console.log(`The API url (prev): ${url}`);
-    await fetch(`${process.env.PROPRESENTER_API_URL}/v1/trigger/previous`, { method: 'GET' });
+
+    await fetch(url, { method: 'GET' });
 });
 
 app.use((err, _req, res, next) => {

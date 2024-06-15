@@ -12,15 +12,17 @@ function App() {
   const [activePresentation, setActivePresentation] = useState(null); // selected presentation: { uuid, name }
   const [presentationDetails, setPresentationDetails] = useState(null); // selected presentation details: { uuid, name, slideCount }
 
+  const [preview, setPreview] = useState(null);
+  const [activeSlideDetails, setActiveSlideDetails] = useState(null); // active slide details: { presentationUuid, slideIndex }
+
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
 
-  //const apiUrl = 'http://localhost:3001';
-  const apiUrl = '';
+  const apiUrl = 'http://localhost:3001';
+  //const apiUrl = '';
 
   useEffect(() => {
     fetch(`${apiUrl}/playlists`, { method: 'GET' }).then(res => res.json()).then(playlists => {
         const list = playlists.map(item => item.id);
-        
         setPlaylists(list);
         setActivePlaylist(list[0].uuid);
         
@@ -29,6 +31,26 @@ function App() {
         console.log("LOADED");
       });
   }, []);
+
+  useEffect(() => {
+    fetch(`${apiUrl}/activeSlide`, { method: 'GET' }).then(res => res.json()).then(res => {
+      setActiveSlideDetails(res);
+      return res;
+    }).then(res => {
+      fetch(`${apiUrl}/presentation/${res.presentationUuid}/thumbnail/${res.slideIndex}`, { method: 'GET' }).then(res =>
+        res.blob()).then(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          setPreview(blobUrl);
+        });
+    });
+
+    /*
+    fetch(`${apiUrl}/preview`, { method: 'GET' }).then(res => res.blob()).then(blob => {
+      const blobUrl = URL.createObjectURL(blob);
+      setPreview(blobUrl);
+    });
+    */
+  }, [isLoadingPreview]);
 
   async function fetchPresentationList(uuid) {
     const response = await fetch(`${apiUrl}/playlist/${uuid}`, { method: 'GET' }).then(res => res.json());
@@ -47,10 +69,22 @@ function App() {
     const slides = [];
 
     for (let i = 0; i < presentationDetails?.slideCount; i++) {
-      slides.push(<Image src={`${apiUrl}/presentation/${presentationDetails.uuid}/thumbnail/${i}`} width='300' style={{margin: 8}} />);
+      slides.push(<Image
+        src={`${apiUrl}/presentation/${presentationDetails.uuid}/thumbnail/${i}`}
+        key={i}
+        width='300'
+        style={{margin: 8}}
+        onClick={async () => await onTriggerSlide(presentationDetails.uuid, i)} />);
     }
 
     return slides;
+  }
+
+  async function onTriggerSlide(uuid, slideIndex) {
+    setIsLoadingPreview(true);
+    
+    await fetch(`${apiUrl}/presentation/${presentationDetails.uuid}/${slideIndex}/trigger`);
+    await setTimeout(() => setIsLoadingPreview(false), 100);
   }
 
   async function changeActivePlaylist(dropDownChangeEvent) {
@@ -64,19 +98,11 @@ function App() {
   }
 
   async function previousCue() {
-    console.log("PREVIOUS");
-    const url = window.location.host;
-    await fetch(`${apiUrl}/prev`, {
-      method: 'GET'
-    });
+    await fetch(`${apiUrl}/trigger/prev`, { method: 'GET' });
   }
 
   async function nextCue() {
-    console.log("NEXT CUE");
-    const url = `${window.location.host}/next`;
-    await fetch(`${apiUrl}/next`, {
-      method: 'GET'
-    });
+    await fetch(`${apiUrl}/trigger/next`, { method: 'GET' });
   }
 
   return (
@@ -85,10 +111,9 @@ function App() {
         <Dropdown value={activePlaylist} options={playlists} optionValue="uuid" optionLabel="name" onChange={changeActivePlaylist} />
         <Dropdown value={activePresentation} options={presentationList} optionValue="uuid" optionLabel="name" onChange={changeActivePresentation} />
       </div>
-      <div style={{margin: 16}}>
+      <div style={{margin: 16, height:255}}>
         {
-          true &&
-          <Image src={`${apiUrl}/preview`} width='400' />
+          !isLoadingPreview && <Image src={preview} width='400' />
         }
       </div>
       <div>
