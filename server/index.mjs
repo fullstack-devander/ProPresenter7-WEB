@@ -27,9 +27,40 @@ app.use(express.static(staticAppPath));
 app.use(express.json());
 
 app.get('/playlists', async (req, res) => {
-    const url = `${process.env.PROPRESENTER_API_URL}/v1/playlists`;
-    const playlists = await fetch(url, { method: 'GET' }).then(res => res.json());
-    res.send(playlists).status(200);
+    try {
+        const responseModels = [];
+
+        const playlistUrl = `${process.env.PROPRESENTER_API_URL}/v1/playlists`;
+
+        const receivedPlaylists = await fetch(playlistUrl, { method: 'GET' }).then(
+            response => response.json()).then(
+            playlists => playlists.filter(
+            playlist => playlist.field_type == 'playlist'));
+        
+        for (let index in receivedPlaylists) {
+            const playlist = receivedPlaylists[index];
+            const presentationUri = `${process.env.PROPRESENTER_API_URL}/v1/playlist/${playlist.id.uuid}`;
+            const receivedPresentation = await fetch(presentationUri, { method: 'GET' }).then(
+                response => response.json());
+            
+            responseModels.push({
+                uuid: playlist.id.uuid,
+                name: playlist.id.name,
+                presentations: receivedPresentation.items.map(presentation => ({
+                    uuid: presentation.id.uuid,
+                    name: presentation.id.name,
+                })),
+            });
+        }
+
+        console.info('Playlist models sent');
+        
+        res.send(responseModels).status(200);
+    }
+    catch (ex) {
+        console.error(ex.message);
+        res.send('Internal server error.').status(500);
+    }
 });
 
 app.get('/playlist/:uuid', async (req, res) => {

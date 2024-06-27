@@ -4,6 +4,7 @@ import { Image } from 'primereact/image';
 import { ScrollPanel } from 'primereact/scrollpanel';
 
 import React, { useState, useEffect } from 'react';
+import PlaylistPanel from './components/playlist-panel/PlaylistPanel';
 
 function App() {
   const [playlists, setPlaylists] = useState([]); // list of playlists: { uuid, name }
@@ -21,18 +22,23 @@ function App() {
   //const apiUrl = '';
 
   useEffect(() => {
+    /*
     fetch(`${apiUrl}/playlists`, { method: 'GET' }).then(res => res.json()).then(playlists => {
-        const list = playlists.map(item => item.id);
-        setPlaylists(list);
-        setActivePlaylist(list[0].uuid);
-        
-        fetchPresentationList(list[0].uuid);
-      }).finally(() => {
-        console.log("LOADED");
-      });
+      console.log(playlists);
+
+      //const list = playlists.map(item => item.id);
+      setPlaylists(playlists);
+      setActivePlaylist(playlists[0].uuid);
+      
+      fetchPresentationList(activePlaylist);
+    }).finally(() => {
+      console.log("LOADED");
+    });
+    */
   }, []);
 
   useEffect(() => {
+    /*
     fetch(`${apiUrl}/activeSlide`, { method: 'GET' }).then(res => res.json()).then(res => {
       setActiveSlideDetails(res);
       return res;
@@ -43,6 +49,7 @@ function App() {
           setPreview(blobUrl);
         });
     });
+    */
 
     /*
     fetch(`${apiUrl}/preview`, { method: 'GET' }).then(res => res.blob()).then(blob => {
@@ -52,13 +59,7 @@ function App() {
     */
   }, [isLoadingPreview]);
 
-  async function fetchPresentationList(uuid) {
-    const response = await fetch(`${apiUrl}/playlist/${uuid}`, { method: 'GET' }).then(res => res.json());
-    const presentations = response.items.map(item => item.id);
-    setPresentationList(presentations);
-    setActivePresentation(presentations[0].uuid);
-    await fetchPresentationDetails(presentations[0].uuid);
-  }
+  
   
   async function fetchPresentationDetails(uuid) {
     const response = await fetch(`${apiUrl}/presentation/${uuid}`, { method: 'GET' }).then(res => res.json());
@@ -87,16 +88,6 @@ function App() {
     await setTimeout(() => setIsLoadingPreview(false), 100);
   }
 
-  async function changeActivePlaylist(dropDownChangeEvent) {
-    setActivePlaylist(dropDownChangeEvent.value);
-    await fetchPresentationList(dropDownChangeEvent.value);
-  }
-
-  async function changeActivePresentation(dropDownChangeEvent) {
-    setActivePresentation(dropDownChangeEvent.value);
-    await fetchPresentationDetails(dropDownChangeEvent.value);
-  }
-
   async function previousCue() {
     await fetch(`${apiUrl}/trigger/prev`, { method: 'GET' });
   }
@@ -108,6 +99,9 @@ function App() {
   return (
     <div className="App" style={{padding: '32px 0'}}>
       <div>
+        <PlaylistPanel />
+      </div>
+      {/*<div>
         <Dropdown value={activePlaylist} options={playlists} optionValue="uuid" optionLabel="name" onChange={changeActivePlaylist} />
         <Dropdown value={activePresentation} options={presentationList} optionValue="uuid" optionLabel="name" onChange={changeActivePresentation} />
       </div>
@@ -130,7 +124,7 @@ function App() {
             Попередній слайд
           </button>
         </div>
-      </div>
+      </div>*/}
     </div>
   );
 }
