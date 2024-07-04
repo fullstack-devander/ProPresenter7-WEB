@@ -2,11 +2,15 @@ import './App.css';
 import { Dropdown } from 'primereact/dropdown';
 import { Image } from 'primereact/image';
 import { ScrollPanel } from 'primereact/scrollpanel';
+import { Button } from 'primereact/button';
+import { Sidebar } from 'primereact/sidebar';
 
 import React, { useState, useEffect } from 'react';
 import PlaylistPanel from './components/playlist-panel/PlaylistPanel';
 
 function App() {
+  const [isVisibleTopPanel, setIsVisibleTopPanel] = useState(false);
+
   const [playlists, setPlaylists] = useState([]); // list of playlists: { uuid, name }
   const [activePlaylist, setActivePlaylist] = useState(null); // selected playlist: { uuid, name }
   const [presentationList, setPresentationList] = useState([]); // list of presentations: { uuid, name }
@@ -97,10 +101,24 @@ function App() {
   }
 
   return (
-    <div className="App" style={{padding: '32px 0'}}>
-      <div>
-        <PlaylistPanel />
-      </div>
+    <div className="App">
+
+        <Sidebar visible={isVisibleTopPanel} position="top" onHide={() => setIsVisibleTopPanel(false)}>
+          <PlaylistPanel onSelectPresentation={(uuid) => {
+            console.log("onSelectPresentation (callback)");
+            console.log("Selected presentation uuid:");
+            console.log(uuid);
+          }} />
+        </Sidebar>
+
+        <div style={{textAlign: 'right', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <div>
+            <h1 style={{margin: '0'}}>Presentations</h1>
+          </div>
+          <div>
+            <Button icon="pi pi-align-justify" onClick={() => setIsVisibleTopPanel(true)} />
+          </div>
+        </div>
       {/*<div>
         <Dropdown value={activePlaylist} options={playlists} optionValue="uuid" optionLabel="name" onChange={changeActivePlaylist} />
         <Dropdown value={activePresentation} options={presentationList} optionValue="uuid" optionLabel="name" onChange={changeActivePresentation} />

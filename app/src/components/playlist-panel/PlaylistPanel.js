@@ -1,51 +1,61 @@
+import './PlaylistPanel.css';
 import { useState, useEffect } from 'react';
 import { Dropdown } from 'primereact/dropdown';
 
 import { getPlaylists } from '../../services/ProPresenterAPIService';
 
 function PlaylistPanel({ onSelectPresentation }) {
-    const [playlists, setPlaylists] = useState([]);
-    const [selectedPlaylistUuid, setSelectedPlaylistUuid] = useState(null);
-    const [presentationList, setPresentationList] = useState([]);
-    const [selectedPresentationUuid, setSelectedPresentationUuid] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [playlists, setPlaylists] = useState(null);
+    const [presentations, setPresentations] = useState(null);
+    const [selectedPlaylistUuid, setSelectedPlaylistUuid] = useState();
+    const [selectedPresentationUuid, setSelectedPresentationUuid] = useState();
 
     useEffect(() => {
         getPlaylists().then(playlists => {
-            console.log(playlists);
-            
             setPlaylists(playlists);
 
-            const uuid = playlists.length > 0 ? playlists[0].uuid : null;
-            setSelectedPlaylist(uuid);
-        });
+            if (playlists?.length > 0) {
+                setSelectedPlaylistUuid(playlists[0].uuid);
+            }
+        }).finally(() => setIsLoading(false));
     }, []);
 
     useEffect(() => {
-        setPresentationList(selectedPlaylist.presentations);
-        
-        const uuid = selectedPlaylist?.presentations.length > 0 ? selectedPlaylist.presentations[0].uuid : null;
-        setSelectedPresentation(uuid);
+        if (playlists) {
+            const playlist = playlists.find(playlist => playlist.uuid === selectedPlaylistUuid);
+            setPresentations(playlist.presentations);
+            
+            if (playlist.presentations.length > 0) {
+                setSelectedPresentationUuid(playlist.presentations[0].uuid);
+            }
+        }
     }, [selectedPlaylistUuid]);
 
     useEffect(() => {
-        onSelectPresentation(selectedPresentationUuid);
+        if (playlists) {
+            onSelectPresentation(selectedPresentationUuid);
+        }
     }, [selectedPresentationUuid]);
 
     return (
         <div>
-            <Dropdown
-                value={selectedPlaylist}
-                options={playlists}
-                optionValue="uuid"
-                optionLabel="name"
-                onChange={event => setSelectedPlaylistUuid(event.value)} />
+            { isLoading && <div>Loading...</div> }
+            { !isLoading && <div className='playlist-panel'>
+                <Dropdown
+                    value={selectedPlaylistUuid}
+                    options={playlists}
+                    optionValue="uuid"
+                    optionLabel="name"
+                    onChange={event => setSelectedPlaylistUuid(event.value)} />
 
-            <Dropdown
-                value={selectedPresentation}
-                options={presentationList}
-                optionValue="uuid"
-                optionLabel="name"
-                onChange={event => setSelectedPresentationUuid(event.value)} />
+                <Dropdown
+                    value={selectedPresentationUuid}
+                    options={presentations}
+                    optionValue="uuid"
+                    optionLabel="name"
+                    onChange={event => setSelectedPresentationUuid(event.value)} />
+            </div> }
         </div>
     );
 }
