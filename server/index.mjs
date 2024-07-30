@@ -136,13 +136,17 @@ app.get('/trigger/next', async (req, res) => {
     console.log(url);
     
     await fetch(url, { method: 'GET' });
+
+    res.sendStatus(200);
 });
 
 app.get('/trigger/prev', async (req, res) => {
     const url = `${process.env.PROPRESENTER_API_URL}/v1/trigger/previous`;
-    console.log(`The API url (prev): ${url}`);
+    console.log(url);
 
     await fetch(url, { method: 'GET' });
+
+    res.sendStatus(200);
 });
 
 app.use((err, _req, res, next) => {

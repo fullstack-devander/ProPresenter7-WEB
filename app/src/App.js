@@ -1,36 +1,44 @@
 import './App.css';
-import { Dropdown } from 'primereact/dropdown';
 import { Image } from 'primereact/image';
-import { ScrollPanel } from 'primereact/scrollpanel';
 import { Button } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
+import { Divider } from 'primereact/divider';
+import { Dropdown } from 'primereact/dropdown';
 
 import React, { useState, useEffect } from 'react';
-import PlaylistPanel from './components/playlist-panel/PlaylistPanel';
-import { getPlaylists, getPresentationDetails, getThumbnail } from './services/ProPresenterAPIService';
+
+import {
+  getActiveSlideIndex, 
+  getPlaylists, 
+  getPresentationDetails, 
+  getThumbnail, 
+  triggerNextSlide, 
+  triggerPrevSlide, 
+  triggerSlide 
+} from './services/ProPresenterAPIService';
 
 function App() {
   const [isVisibleTopPanel, setIsVisibleTopPanel] = useState(false);
   const [playlists, setPlaylists] = useState(null);
+  const [presentations, setPresentations] = useState(null);
   const [activePlaylistUuid, setActivePlaylistUuid] = useState(null);
   const [activePresentationUuid, setActivePresentationUuid] = useState(null);
   const [activeSlide, setActiveSlide] = useState(null);
-
-
-  const [presentationDetails, setPresentationDetails] = useState(null); // selected presentation details: { uuid, name, slideCount }
-
-  const [preview, setPreview] = useState(null);
-  const [activeSlideDetails, setActiveSlideDetails] = useState(null); // active slide details: { presentationUuid, slideIndex }
-
-  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [presentationDetails, setPresentationDetails] = useState(null);
 
   useEffect(() => {
+
     getPlaylists().then(playlists => {
       setPlaylists(playlists);
 
       if (playlists?.length > 0) {
         const firstPlaylist = playlists[0];
         setActivePlaylistUuid(firstPlaylist.uuid);
+
+        if (playlists[0].presentations?.length > 0) {
+          setPresentations(playlists[0].presentations);
+          onSelectPresentation(playlists[0].presentations[0].uuid);
+        }
 
         return firstPlaylist;
       }
@@ -49,30 +57,12 @@ function App() {
           setPresentationDetails(presentationDetails);
         });
       }
+    }).then(() => {
+      getActiveSlideIndex().then(response => {
+        setActiveSlide(response);
+      });
     });
   }, []);
-
-  useEffect(() => {
-    /*
-    fetch(`${apiUrl}/activeSlide`, { method: 'GET' }).then(res => res.json()).then(res => {
-      setActiveSlideDetails(res);
-      return res;
-    }).then(res => {
-      fetch(`${apiUrl}/presentation/${res.presentationUuid}/thumbnail/${res.slideIndex}`, { method: 'GET' }).then(res =>
-        res.blob()).then(blob => {
-          const blobUrl = URL.createObjectURL(blob);
-          setPreview(blobUrl);
-        });
-    });
-    */
-
-    /*
-    fetch(`${apiUrl}/preview`, { method: 'GET' }).then(res => res.blob()).then(blob => {
-      const blobUrl = URL.createObjectURL(blob);
-      setPreview(blobUrl);
-    });
-    */
-  }, [isLoadingPreview]);
 
   function slideImages() {
     const slides = [];
@@ -80,34 +70,58 @@ function App() {
     for (let i = 0; i < presentationDetails?.slideCount; i++) {
       slides.push(<Image
         src={getThumbnail(presentationDetails.uuid, i)}
-        className={i === 2 ? 'slide active-slide' : 'slide'}
+        className={presentationDetails.uuid === activeSlide?.presentationUuid && i === activeSlide?.slideIndex ? 'slide active-slide' : 'slide'}
         key={i}
         width='300'
-        onClick={async () => await onTriggerSlide(presentationDetails.uuid, i)} />);
+        onClick={() => {
+          setActiveSlide(null);
+          onTriggerSlide(presentationDetails.uuid, i);
+        }} />);
     }
 
     return slides;
   }
 
-  async function onTriggerSlide(uuid, slideIndex) {
-    console.log("Trigger slide");
-    /*
-    setIsLoadingPreview(true);
-    
-    await fetch(`${apiUrl}/presentation/${presentationDetails.uuid}/${slideIndex}/trigger`);
-    await setTimeout(() => setIsLoadingPreview(false), 100);
-    */
+  function selectPlaylist(uuid) {
+    if (playlists) {
+        const playlist = playlists.find(playlist => playlist.uuid === uuid);
+        setPresentations(playlist.presentations);
+        
+        if (playlist.presentations.length > 0) {
+            onSelectPresentation(playlist.presentations[0].uuid);
+        }
+    }
+}
+
+  function onTriggerSlide(uuid, slideIndex) {
+    triggerSlide(uuid, slideIndex).then(() => {
+      setTimeout(() => {
+        getActiveSlideIndex().then(slide => {
+          setActiveSlide(slide);
+        });
+      }, 200);
+    });
   }
 
-  /*
-  async function previousCue() {
-    await fetch(`${apiUrl}/trigger/prev`, { method: 'GET' });
+  function onTriggerNextSlide() {
+    triggerNextSlide().then(() => {
+      setTimeout(() => {
+        getActiveSlideIndex().then(slide => {
+          setActiveSlide(slide);
+        });
+      }, 200);
+    });
   }
 
-  async function nextCue() {
-    await fetch(`${apiUrl}/trigger/next`, { method: 'GET' });
+  function onTriggerPrevSlide() {
+    triggerPrevSlide().then(() => {
+      setTimeout(() => {
+        getActiveSlideIndex().then(slide => {
+          setActiveSlide(slide);
+        });
+      }, 200);
+    });
   }
-  */
 
   async function onSelectPresentation(presentationUuid) {
     setActivePresentationUuid(presentationUuid);
@@ -118,45 +132,69 @@ function App() {
   return (
     <div className="App">
 
-        <Sidebar visible={isVisibleTopPanel} position="top" onHide={() => setIsVisibleTopPanel(false)}>
-          <PlaylistPanel
-            activePlaylist={activePlaylistUuid} 
-            activePresentation={activePresentationUuid}
-            playlists={playlists} 
-            onSelectPresentation={onSelectPresentation} />
-        </Sidebar>
+      <Sidebar visible={isVisibleTopPanel} position="top" onHide={() => setIsVisibleTopPanel(false)}>
+        <div className='playlist-panel'>
+          <label>
+            Playlist:
+            <Dropdown
+              value={activePlaylistUuid}
+              options={playlists}
+              optionValue="uuid"
+              optionLabel="name"
+              onChange={event => selectPlaylist(event.value)}
+            />
+          </label>
 
-        <div className='title-panel'>
-          <div>
-            <h1 style={{margin: '0'}}>{presentationDetails ? presentationDetails.name : 'Presentation'}</h1>
-          </div>
-          <div>
-            <Button icon="pi pi-align-justify" onClick={() => setIsVisibleTopPanel(true)} />
-          </div>
+          <label>
+            Presentation:
+            <Dropdown
+              value={activePresentationUuid}
+              options={presentations}
+              optionValue="uuid"
+              optionLabel="name"
+              onChange={event => onSelectPresentation(event.value)}
+            />
+          </label>
+          
         </div>
-        <div className='slide-container'>
-          {slideImages()}
+      </Sidebar>
+
+      <div className='title-panel'>
+        <div>
+          <h1>{presentationDetails ? presentationDetails.name : 'Presentation'}</h1>
         </div>
-      
-      {/*
-      <div style={{margin: 16, height:255}}>
-        {
-          !isLoadingPreview && <Image src={preview} width='400' />
-        }
+        <div>
+          <Button
+            icon="pi pi-cog"
+            tooltip='Settings'
+            tooltipOptions={{position: 'bottom'}}
+            onClick={() => setIsVisibleTopPanel(true)}
+          />
+        </div>
       </div>
-      
-      <div style={{verticalAlign: 'bottom'}}>
-        <div className='my-btn'>
-          <button style={{width: '100%', padding: '24px 0', fontSize: '32px', fontWeight: 'bold'}} className="btn btn-primary btn-lg" onClick={nextCue}>
-            Наступний слайд
-          </button>
-        </div>
-        <div className='my-btn'>
-          <button style={{width: '100%', padding: '24px 0', fontSize: '26px'}} className="btn btn-secondary btn-lg btn-block" onClick={previousCue}>
-            Попередній слайд
-          </button>
-        </div>
-      </div>*/}
+      <Divider />
+      <div className='slide-container'>
+        {slideImages()}
+      </div>
+      <Divider />
+      <div className='footer'>
+        <Button
+          severity='secondary'
+          icon="pi pi-caret-left"
+          size='large'
+          tooltip='Previous slide'
+          tooltipOptions={{position: 'top'}}
+          onClick={onTriggerPrevSlide}
+        />
+        <Button
+          severity='secondary'
+          icon="pi pi-caret-right"
+          size='large'
+          tooltip='Next slide'
+          tooltipOptions={{position: 'top'}}
+          onClick={onTriggerNextSlide}
+        />
+      </div>
     </div>
   );
 }
