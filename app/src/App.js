@@ -2,7 +2,6 @@ import './App.css';
 import { Image } from 'primereact/image';
 import { Button } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
-import { Divider } from 'primereact/divider';
 import { Dropdown } from 'primereact/dropdown';
 
 import React, { useState, useEffect } from 'react';
@@ -172,11 +171,9 @@ function App() {
           />
         </div>
       </div>
-      <Divider />
       <div className='slide-container'>
         {slideImages()}
       </div>
-      <Divider />
       <div className='footer'>
         <Button
           severity='secondary'
