@@ -58,6 +58,7 @@ label {
   display: flex;
   flex-wrap: wrap;
   padding: 32px;
+  margin-bottom: 108px;
 }
 
 .p-button.p-button-lg {

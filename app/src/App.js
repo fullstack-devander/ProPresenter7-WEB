@@ -18,49 +18,15 @@ import {
 
 function App() {
   const [isVisibleTopPanel, setIsVisibleTopPanel] = useState(false);
-  const [playlists, setPlaylists] = useState(null);
-  const [presentations, setPresentations] = useState(null);
+  const [playlists, setPlaylists] = useState([]);
+  const [presentations, setPresentations] = useState([]);
   const [activePlaylistUuid, setActivePlaylistUuid] = useState(null);
   const [activePresentationUuid, setActivePresentationUuid] = useState(null);
   const [activeSlide, setActiveSlide] = useState(null);
   const [presentationDetails, setPresentationDetails] = useState(null);
 
   useEffect(() => {
-
-    getPlaylists().then(playlists => {
-      setPlaylists(playlists);
-
-      if (playlists?.length > 0) {
-        const firstPlaylist = playlists[0];
-        setActivePlaylistUuid(firstPlaylist.uuid);
-
-        if (playlists[0].presentations?.length > 0) {
-          setPresentations(playlists[0].presentations);
-          onSelectPresentation(playlists[0].presentations[0].uuid);
-        }
-
-        return firstPlaylist;
-      }
-      return null;
-    }).then(playlist => {
-      if (playlist?.presentations.length > 0) {
-        const firstPresentation = playlist.presentations[0];
-        setActivePresentationUuid(firstPresentation.uuid);
-
-        return firstPresentation;
-      }
-      return null;
-    }).then(presentation => {
-      if (presentation) {
-        getPresentationDetails(presentation.uuid).then(presentationDetails => {
-          setPresentationDetails(presentationDetails);
-        });
-      }
-    }).then(() => {
-      getActiveSlideIndex().then(response => {
-        setActiveSlide(response);
-      });
-    });
+    Init();
   }, []);
 
   function slideImages() {
@@ -81,8 +47,37 @@ function App() {
     return slides;
   }
 
+  async function Init() {
+    const playlists = await getPlaylists();
+    setPlaylists(playlists);
+
+    if (!playlists?.length > 0) {
+      return;
+    }
+
+    const firstPlaylist = playlists[0];
+    setActivePlaylistUuid(firstPlaylist.uuid);
+
+    if (!firstPlaylist.presentations?.length > 0) {
+      return;
+    }
+
+    setPresentations(firstPlaylist.presentations);
+
+    const firstPresentation = firstPlaylist.presentations[0];
+
+    setActivePresentationUuid(firstPresentation.uuid);
+    onSelectPresentation(firstPresentation.uuid);
+
+    const presentationDetails = await getPresentationDetails(firstPresentation.uuid);
+    setPresentationDetails(presentationDetails);
+
+    const activeSlide = await getActiveSlideIndex();
+    setActiveSlide(activeSlide);
+  }
+
   function selectPlaylist(uuid) {
-    if (playlists) {
+    if (playlists?.length > 0) {
         const playlist = playlists.find(playlist => playlist.uuid === uuid);
         setPresentations(playlist.presentations);
         
