@@ -51,81 +51,112 @@ app.get('/playlists', async (req, res) => {
       });
     }
 
-    res.send(responseModels).status(200);
+    res.status(200).send(responseModels);
   }
   catch (ex) {
-    console.error(ex.message);
-    res.send('Internal server error.').status(500);
+    console.error(`Playlists error: ${ex.message}`);
+    res.status(500).send('Internal server error');
   }
 });
 
 app.get('/presentation/:uuid', async (req, res) => {
-  const url = `${process.env.PROPRESENTER_API_URL}/v1/presentation/${req.params.uuid}`;
-  const response = await fetch(url, { method: 'GET' }).then(res => res.json());
-
-  let slideCount = 0;
-  response.presentation.groups.forEach(group => {
-    group.slides.forEach(() => ++slideCount);
-  });
-
-  const presentationRes = {
-    uuid: response.presentation.id.uuid,
-    name: response.presentation.id.name,
-    slideCount: slideCount,
-  };
-
-  res.send(presentationRes).status(200);
+  try {
+    const url = `${process.env.PROPRESENTER_API_URL}/v1/presentation/${req.params.uuid}`;
+    const response = await fetch(url, { method: 'GET' }).then(res => res.json());
+  
+    let slideCount = 0;
+    response.presentation.groups.forEach(group => {
+      group.slides.forEach(() => ++slideCount);
+    });
+  
+    const presentationRes = {
+      uuid: response.presentation.id.uuid,
+      name: response.presentation.id.name,
+      slideCount: slideCount,
+    };
+  
+    res.status(200).send(presentationRes);
+  } catch (ex) {
+    console.error(`Presentation Details error: ${ex.message}`);
+    resizeBy.status(500).send('Internal server error');
+  }
+  
 });
 
 app.get('/presentation/:uuid/thumbnail/:index', async (req, res) => {
-  const url = `${process.env.PROPRESENTER_API_URL}/v1/presentation/${req.params.uuid}/thumbnail/${req.params.index}`;
-  console.log(url);
-  const thumbnail = await fetch(url, { method: 'GET' });
-  const result = await thumbnail.blob().then(res => res.arrayBuffer());
-
-  res.set({
-    'content-length': thumbnail.headers.get('content-length'),
-    'content-type': thumbnail.headers.get('content-type'),
-  });
-
-  res.send(Buffer.from(result)).status(200);
+  try {
+    const url = `${process.env.PROPRESENTER_API_URL}/v1/presentation/${req.params.uuid}/thumbnail/${req.params.index}`;
+    const thumbnail = await fetch(url, { method: 'GET' });
+    const result = await thumbnail.blob().then(res => res.arrayBuffer());
+  
+    res.set({
+      'content-length': thumbnail.headers.get('content-length'),
+      'content-type': thumbnail.headers.get('content-type'),
+    });
+  
+    res.status(200).send(Buffer.from(result));
+  } catch (ex) {
+    console.error(`Presentation Thumbnail error: ${ex.message}`);
+    res.status(500).send('Internal server error');
+  }
 });
 
 app.get('/activeSlide', async (req, res) => {
-  const slideIndexUrl = `${process.env.PROPRESENTER_API_URL}/v1/presentation/slide_index`;
-  const slideIndexResponse = await fetch(slideIndexUrl, { method: 'GET' });
-  const slideIndex = await slideIndexResponse.json();
-
-  const result = {
-    presentationUuid: slideIndex.presentation_index.presentation_id.uuid,
-    slideIndex: slideIndex.presentation_index.index,
-  };
-
-  res.send(result).status(200);
+  try {
+    const slideIndexUrl = `${process.env.PROPRESENTER_API_URL}/v1/presentation/slide_index`;
+    const slideIndexResponse = await fetch(slideIndexUrl, { method: 'GET' });
+    const slideIndex = await slideIndexResponse.json();
+  
+    const result = {
+      presentationUuid: slideIndex.presentation_index.presentation_id.uuid,
+      slideIndex: slideIndex.presentation_index.index,
+    };
+  
+    res.status(200).send(result);
+  } catch (ex) {
+    console.error(`Active Slide error: ${ex.message}`);
+    res.status(500).send(ex.message);
+  }
+  
 });
 
 app.get('/presentation/:uuid/:index/trigger', async (req, res) => {
-  const uuid = req.params.uuid;
-  const index = req.params.index;
+  try {
+    const uuid = req.params.uuid;
+    const index = req.params.index;
 
-  const url = `${process.env.PROPRESENTER_API_URL}/v1/presentation/${uuid}/${index}/trigger`;
-  await fetch(url, { method: 'GET' });
+    const url = `${process.env.PROPRESENTER_API_URL}/v1/presentation/${uuid}/${index}/trigger`;
+    await fetch(url, { method: 'GET' });
 
-  res.sendStatus(200);
+    res.sendStatus(200);
+  } catch (ex) {
+    console.error(`Trigger Slide error: ${ex.message}`);
+    res.status(500).send('Internal server error');
+  }
 });
 
 app.get('/trigger/next', async (req, res) => {
-  const url = `${process.env.PROPRESENTER_API_URL}/v1/trigger/next`;
-  await fetch(url, { method: 'GET' });
+  try {
+    const url = `${process.env.PROPRESENTER_API_URL}/v1/trigger/next`;
+    await fetch(url, { method: 'GET' });
 
-  res.sendStatus(200);
+    res.sendStatus(200);
+  } catch (ex) {
+    console.error(`Trigger next slide error: ${ex.message}`);
+    res.status(500).send('Internal server error');
+  }
 });
 
 app.get('/trigger/prev', async (req, res) => {
-  const url = `${process.env.PROPRESENTER_API_URL}/v1/trigger/previous`;
-  await fetch(url, { method: 'GET' });
+  try {
+    const url = `${process.env.PROPRESENTER_API_URL}/v1/trigger/previous`;
+    await fetch(url, { method: 'GET' });
 
-  res.sendStatus(200);
+    res.sendStatus(200);
+  } catch (ex) {
+    console.error(`Trigger prev slide error: ${ex.message}`);
+    res.status(500).send('Internal server error');
+  }
 });
 
 app.use((err, _req, res, next) => {
