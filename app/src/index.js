@@ -5,7 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 //theme
-import "primereact/resources/themes/saga-green/theme.css";
+//import "primereact/resources/themes/saga-green/theme.css";
+import "primereact/resources/themes/lara-dark-green/theme.css";
 //core
 import "primereact/resources/primereact.min.css";
 //icons

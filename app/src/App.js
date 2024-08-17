@@ -3,6 +3,9 @@ import { Image } from 'primereact/image';
 import { Button } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
 import { Dropdown } from 'primereact/dropdown';
+import { Toolbar } from 'primereact/toolbar';
+import { ScrollPanel } from 'primereact/scrollpanel';
+import { Panel } from 'primereact/panel';
 
 import React, { useState, useEffect } from 'react';
 
@@ -128,50 +131,48 @@ function App() {
 
       <Sidebar visible={isVisibleTopPanel} position="top" onHide={() => setIsVisibleTopPanel(false)}>
         <div className='playlist-panel'>
-          <label>
-            Playlist:
+          <div className='dropdown-control'>
+            <label htmlFor='playlist-id'>Playlist:</label>
             <Dropdown
+              inputId='playlist-id'
               value={activePlaylistUuid}
               options={playlists}
               optionValue="uuid"
               optionLabel="name"
               onChange={event => selectPlaylist(event.value)}
             />
-          </label>
-
-          <label>
-            Presentation:
+          </div>
+          <div className='dropdown-control'>
+            <label htmlFor='presentation-id'>Presentation:</label>
             <Dropdown
+              inputId='presentation-id'
               value={activePresentationUuid}
               options={presentations}
               optionValue="uuid"
               optionLabel="name"
               onChange={event => onSelectPresentation(event.value)}
             />
-          </label>
-          
+          </div>
         </div>
       </Sidebar>
 
-      <div className='title-panel'>
-        <div>
-          <h1>{presentationDetails ? presentationDetails.name : 'Presentation'}</h1>
-        </div>
-        <div>
-          <Button
-            icon="pi pi-cog"
-            tooltip='Settings'
-            tooltipOptions={{position: 'bottom'}}
-            onClick={() => setIsVisibleTopPanel(true)}
-          />
-        </div>
-      </div>
+      <Toolbar
+        center={presentationDetails?.name}
+        end={<Button
+          icon="pi pi-cog"
+          tooltip='Settings'
+          tooltipOptions={{position: 'bottom'}}
+          onClick={() => setIsVisibleTopPanel(true)}
+        />}>
+      </Toolbar>
       <div className='slide-container'>
-        {slideImages()}
+        <ScrollPanel style={{height: "calc(100vh - 260px)", width: "100%"}} className="scroll">
+          {slideImages()}
+        </ScrollPanel>
       </div>
-      <div className='footer'>
+
+      <Panel>
         <Button
-          severity='secondary'
           icon="pi pi-caret-left"
           size='large'
           tooltip='Previous slide'
@@ -179,14 +180,14 @@ function App() {
           onClick={onTriggerPrevSlide}
         />
         <Button
-          severity='secondary'
           icon="pi pi-caret-right"
           size='large'
           tooltip='Next slide'
           tooltipOptions={{position: 'top'}}
           onClick={onTriggerNextSlide}
         />
-      </div>
+      </Panel>
+      
     </div>
   );
 }
