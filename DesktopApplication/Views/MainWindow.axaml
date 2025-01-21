@@ -15,8 +15,12 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Button Margin="16" Click="ButtonClicked" HorizontalAlignment="Center" VerticalAlignment="Center">
-      Start server
-    </Button>
+    <Button
+        x:Name="StartServerButton" 
+        Click="OnStartServerClick"
+        Content="Start Server"
+        Margin="16" 
+        HorizontalAlignment="Center" 
+        VerticalAlignment="Center" />
 
 </Window>

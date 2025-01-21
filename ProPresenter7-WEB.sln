@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProPresenter7WEB.WebServerA
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "web-client-app", "web-client-app\web-client-app.esproj", "{547C4A62-6BFD-48EB-9AB0-9C50E1CC17CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProPresenter7WEB.Core", "ProPresenter7WEB.Core\ProPresenter7WEB.Core.csproj", "{9831FA83-DCAD-4C4F-A528-E8CAB450BC1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProPresenter7WEB.Service", "ProPresenter7WEB.Service\ProPresenter7WEB.Service.csproj", "{7D3F2FED-0D24-4248-8920-94D1D8244C7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,14 @@ Global
 		{547C4A62-6BFD-48EB-9AB0-9C50E1CC17CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{547C4A62-6BFD-48EB-9AB0-9C50E1CC17CD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{547C4A62-6BFD-48EB-9AB0-9C50E1CC17CD}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{9831FA83-DCAD-4C4F-A528-E8CAB450BC1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9831FA83-DCAD-4C4F-A528-E8CAB450BC1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9831FA83-DCAD-4C4F-A528-E8CAB450BC1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9831FA83-DCAD-4C4F-A528-E8CAB450BC1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D3F2FED-0D24-4248-8920-94D1D8244C7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D3F2FED-0D24-4248-8920-94D1D8244C7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D3F2FED-0D24-4248-8920-94D1D8244C7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D3F2FED-0D24-4248-8920-94D1D8244C7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
