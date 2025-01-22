@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProPresenter7WEB.Core\ProPresenter7WEB.Core.csproj" />
+    <ProjectReference Include="..\ProPresenter7WEB.Service\ProPresenter7WEB.Service.csproj" />
+  </ItemGroup>
+
+</Project>
