@@ -1,13 +1,19 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:ProPresenter7WEB.DesktopApplication.ViewModels"
+        xmlns:c="clr-namespace:ProPresenter7WEB.DesktopApplication.Views.Controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="875" d:DesignHeight="250"
+        Width="875" Height="250"
+        MinWidth="875" MinHeight="215"
         x:Class="ProPresenter7WEB.DesktopApplication.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="DesktopApplication">
+        Title="ProPresenter Web UI Server">
+    <Window.Styles>
+        <StyleInclude Source="/Views/Styles/HeaderedContentControlStyles.axaml" />
+    </Window.Styles>
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,12 +21,73 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Button
-        x:Name="StartServerButton" 
-        Click="OnStartServerClick"
-        Content="Start Server"
-        Margin="16" 
-        HorizontalAlignment="Center" 
-        VerticalAlignment="Center" />
+    <Border Padding="8">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1.7*" />    
+            </Grid.ColumnDefinitions>
+            
+            <HeaderedContentControl Grid.Column="0" Margin="2" Padding="16" Header="Web Server">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="28" />
+                        <RowDefinition Height="28" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label 
+                        Grid.Row="0" 
+                        Grid.Column="0" 
+                        VerticalAlignment="Center"
+                        Padding="4,0"
+                        Content="Web Client URL:" />
+                    <TextBlock
+                        x:Name="WebClientUrl" 
+                        Grid.Row="0" 
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Padding="0">
+                        <HyperlinkButton 
+                            Padding="0"
+                            Content="http://localhost:3000"
+                            NavigateUri="http://localhost:3000" />
+                    </TextBlock>
+                    
+                    <Label
+                        Grid.Row="1" 
+                        Grid.Column="0" 
+                        VerticalAlignment="Center"
+                        Padding="4,0"
+                        Content="Server Status:" />
+                    <TextBlock
+                        x:Name="WebServerStatus" 
+                        Grid.Row="1" 
+                        Grid.Column="1" 
+                        VerticalAlignment="Center"
+                        FontWeight="Bold"
+                        Foreground="Red"
+                        Text="Stoped" />
+                    
+                    <Button
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        x:Name="StartServerButton"
+                        Click="OnStartServerClick"
+                        Content="Start Server"
+                        Margin="16"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                </Grid>
+            </HeaderedContentControl>
 
+            <HeaderedContentControl Grid.Column="1" Margin="2" BorderThickness="1" Header="ProPresenter Settings">
+                <c:ProPresenterControlView />
+            </HeaderedContentControl>
+        </Grid>
+    </Border>
 </Window>
