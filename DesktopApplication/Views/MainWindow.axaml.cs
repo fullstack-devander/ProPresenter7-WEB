@@ -1,21 +1,28 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Microsoft.AspNetCore.Builder;
-using System;
+using ProPresenter7WEB.DesktopApplication.ViewModels;
+using ProPresenter7WEB.Service;
 using System.Threading.Tasks;
-using WebAppProgram = ProPresenter7WEB.WebServerApplication.Program;
 
 namespace ProPresenter7WEB.DesktopApplication.Views
 {
     public partial class MainWindow : Window
     {
-        private WebApplication? _webApplication;
+        private readonly ISharedService _sharedService;
         private bool _isServerRunning;
 
-        public MainWindow()
+        public MainWindow(
+            MainWindowViewModel mainWindowViewModel,
+            ISharedService sharedService)
         {
+            _sharedService = sharedService;
+            DataContext = mainWindowViewModel;
+
             InitializeComponent();
         }
+
+        public required WebApplication WebApplication { get; set; }
 
         protected override async void OnClosing(WindowClosingEventArgs e)
         {
@@ -41,10 +48,9 @@ namespace ProPresenter7WEB.DesktopApplication.Views
 
         private async Task StartServer()
         {
-            _webApplication = new WebAppProgram().CreateApplication(Array.Empty<string>());
-            await _webApplication.StartAsync();
+            _sharedService.Data = "Hello";
 
-            var config  = _webApplication.Configuration;
+            await WebApplication.StartAsync();
 
             _isServerRunning = true;
 
@@ -53,11 +59,12 @@ namespace ProPresenter7WEB.DesktopApplication.Views
 
         private async Task StopServer()
         {
-            if (_webApplication != null)
+            _sharedService.Data = "Goodbye";
+
+            if (WebApplication != null)
             {
-                await _webApplication.StopAsync();
-                await _webApplication.DisposeAsync();
-                _webApplication = null;
+                await WebApplication.StopAsync();
+                await WebApplication.DisposeAsync();
                 _isServerRunning = false;
 
                 StartServerButton.Content = "Start Server";
