@@ -15,12 +15,6 @@
         <StyleInclude Source="/Views/Styles/HeaderedContentControlStyles.axaml" />
     </Window.Styles>
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
-
     <Border Padding="8">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -85,7 +79,11 @@
                 </Grid>
             </HeaderedContentControl>
 
-            <HeaderedContentControl Grid.Column="1" Margin="2" BorderThickness="1" Header="ProPresenter Settings">
+            <HeaderedContentControl 
+                Grid.Column="1" 
+                Margin="2" 
+                BorderThickness="1" 
+                Header="ProPresenter Settings">
                 <c:ProPresenterControlView />
             </HeaderedContentControl>
         </Grid>

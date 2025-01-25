@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProPresenter7WEB.DesktopApplication.ViewModels;
+using ProPresenter7WEB.DesktopApplication.ViewModels.Controls;
 using ProPresenter7WEB.DesktopApplication.Views;
 using ProPresenter7WEB.Service;
 
@@ -24,6 +25,8 @@ namespace ProPresenter7WEB.DesktopApplication
 
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<ProPresenterControlViewModel>();
+
             services.AddSingleton<IProPresenterService, ProPresenterService>();
             services.AddSingleton<ISharedService, SharedService>();
 

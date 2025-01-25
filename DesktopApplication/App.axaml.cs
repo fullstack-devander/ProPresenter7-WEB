@@ -17,6 +17,8 @@ namespace ProPresenter7WEB.DesktopApplication
             AvaloniaXamlLoader.Load(this);
         }
 
+        public static IServiceProvider? Services { get; private set; }
+
         public override void OnFrameworkInitializationCompleted()
         {
             var webApp = WebAppBuilder.CreateBuilder(Array.Empty<string>())
@@ -25,13 +27,15 @@ namespace ProPresenter7WEB.DesktopApplication
 
             Startup.Configure(webApp, webApp.Environment);
 
+            Services = webApp.Services;
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();
 
-                var mainWindow = webApp.Services.GetRequiredService<MainWindow>();
+                var mainWindow = Services.GetRequiredService<MainWindow>();
                 mainWindow.WebApplication = webApp;
                 desktop.MainWindow = mainWindow;
             }
