@@ -1,5 +1,4 @@
-﻿using ProPresenter7WEB.Service;
-using AspNetWebApplicationBuilder = Microsoft.AspNetCore.Builder.WebApplicationBuilder;
+﻿using AspNetWebApplicationBuilder = Microsoft.AspNetCore.Builder.WebApplicationBuilder;
 
 namespace ProPresenter7WEB.WebServerApplication.Builder
 {
@@ -14,20 +13,7 @@ namespace ProPresenter7WEB.WebServerApplication.Builder
 
         public static IWebAppBuilder CreateBuilder(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
-
-            builder.Services
-                .AddControllers()
-                .AddApplicationPart(typeof(Program).Assembly)
-                .AddControllersAsServices();
-
-            builder.Services.AddCors(options =>
-                options.AddDefaultPolicy(policy =>
-                    policy.WithOrigins("http://localhost:50890")));
-
-            builder.Services.AddScoped<IPresentationService, PresentationService>();
-
-            return new WebAppBuilder(builder);
+            return new WebAppBuilder(WebApplication.CreateBuilder(args));
         }
 
         public IWebAppBuilder ConfigureServices(Action<IServiceCollection> configureServices)
@@ -41,15 +27,7 @@ namespace ProPresenter7WEB.WebServerApplication.Builder
 
         public WebApplication Build()
         {
-            var app = _webApplicationBuilder.Build();
-
-            app.UseStaticFiles();
-
-            app.UseCors();
-            app.MapControllers();
-            app.MapFallbackToFile("/index.html");
-
-            return app;
+            return _webApplicationBuilder.Build();
         }
     }
 }

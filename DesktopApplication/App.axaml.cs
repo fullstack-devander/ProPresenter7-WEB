@@ -3,9 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
-using ProPresenter7WEB.DesktopApplication.ViewModels;
 using ProPresenter7WEB.DesktopApplication.Views;
-using ProPresenter7WEB.Service;
 using ProPresenter7WEB.WebServerApplication.Builder;
 using System;
 using System.Linq;
@@ -14,8 +12,6 @@ namespace ProPresenter7WEB.DesktopApplication
 {
     public partial class App : Application
     {
-        private IServiceProvider _serviceProvider;
-
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -24,12 +20,10 @@ namespace ProPresenter7WEB.DesktopApplication
         public override void OnFrameworkInitializationCompleted()
         {
             var webApp = WebAppBuilder.CreateBuilder(Array.Empty<string>())
-                .ConfigureServices(services =>
-                {
-                    services.AddSingleton<MainWindow>();
-                    services.AddSingleton<MainWindowViewModel>();
-                    services.AddSingleton<ISharedService, SharedService>();
-                }).Build();
+                .ConfigureServices(Startup.ConfigureServices)
+                .Build();
+
+            Startup.Configure(webApp, webApp.Environment);
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
