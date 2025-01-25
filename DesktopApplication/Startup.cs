@@ -20,8 +20,11 @@ namespace ProPresenter7WEB.DesktopApplication
                 options.AddDefaultPolicy(policy =>
                     policy.WithOrigins("http://localhost:50890")));
 
+            services.AddHttpClient();
+
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<IProPresenterService, ProPresenterService>();
             services.AddSingleton<ISharedService, SharedService>();
 
             services.AddScoped<IPresentationService, PresentationService>();
