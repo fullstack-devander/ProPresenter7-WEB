@@ -1,5 +1,6 @@
 ﻿using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
+using ProPresenter7WEB.DesktopApplication.Properties;
 using ProPresenter7WEB.Service;
 using System;
 using System.Threading.Tasks;
@@ -11,12 +12,15 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         private readonly IProPresenterService _proPresenterService;
 
         private bool _isConnected;
-        private string _connectButtonText = "Connect";
+        private string _connectButtonText = ProPresenterControlResoures.ConnectButtonText;
 
         public ProPresenterControlViewModel(IProPresenterService proPresenterService)
         {
             _proPresenterService = proPresenterService;
         }
+
+        public string IpAddressLabelText => ProPresenterControlResoures.IpAddressLabelText;
+        public string PortLabelText => ProPresenterControlResoures.PortLabelText;
 
         public string ConnectButtonText
         {
@@ -66,13 +70,13 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
             {
                 if (string.IsNullOrEmpty(IpAddress))
                 {
-                    await ShowFailedConnectionMessageBoxAsync("'Ip Address' cannot be empty.");
+                    await ShowFailedConnectionMessageBoxAsync(ProPresenterControlResoures.IpAddressIsEmptyFailMessage);
                     return;
                 }
 
                 if (string.IsNullOrEmpty(Port))
                 {
-                    await ShowFailedConnectionMessageBoxAsync("'Port' cannot be empty.");
+                    await ShowFailedConnectionMessageBoxAsync(ProPresenterControlResoures.PortIsEmptyFailMessage);
                     return;
                 }
 
@@ -80,7 +84,7 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
                 var response = await _proPresenterService.GetProPresenterInfoAsync();
 
                 IsConnected = true;
-                ConnectButtonText = "Disconnect";
+                ConnectButtonText = ProPresenterControlResoures.DisconnectButtonText;
             }
             catch (Exception ex)
             {
@@ -91,13 +95,13 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         private void Disconnect()
         {
             IsConnected = false;
-            ConnectButtonText = "Connect";
+            ConnectButtonText = ProPresenterControlResoures.ConnectButtonText;
         }
 
         private async static Task ShowFailedConnectionMessageBoxAsync(string message)
         {
             await MessageBoxManager
-                .GetMessageBoxStandard($"Failed Connection", message, ButtonEnum.Ok)
+                .GetMessageBoxStandard(ProPresenterControlResoures.FailConnectMsgBoxTitle, message, ButtonEnum.Ok)
                 .ShowAsync();
         }
     }

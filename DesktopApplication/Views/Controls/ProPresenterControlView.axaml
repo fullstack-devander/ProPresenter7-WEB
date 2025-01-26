@@ -18,7 +18,7 @@
             <StackPanel 
                 Margin="0,0,0,4"
                 IsEnabled="{Binding !IsConnected}">
-                <Label Content="IP Address" />
+                <Label Content="{Binding IpAddressLabelText}" />
                 <TextBox
                     Width="250" 
                     HorizontalAlignment="Left"
@@ -28,7 +28,7 @@
             <StackPanel
                 Margin="0,0,0,4"
                 IsEnabled="{Binding !IsConnected}">
-                <Label Content="Port" />
+                <Label Content="{Binding PortLabelText}" />
                 <TextBox 
                     Width="250" 
                     HorizontalAlignment="Left"
