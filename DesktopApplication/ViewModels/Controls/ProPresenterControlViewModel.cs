@@ -1,4 +1,5 @@
 ﻿using ProPresenter7WEB.DesktopApplication.Helpers;
+using ProPresenter7WEB.DesktopApplication.Models;
 using ProPresenter7WEB.DesktopApplication.Properties;
 using ProPresenter7WEB.Service;
 using System;
@@ -16,14 +17,14 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         public ProPresenterControlViewModel(IProPresenterService proPresenterService)
         {
             _proPresenterService = proPresenterService;
+            ProPresenterConnectModel = ModelCacheHelper
+                .ReadModelState<ProPresenterConnectModel>() ?? new ProPresenterConnectModel();
         }
 
         public string IpAddressLabelText => ProPresenterControlResoures.IpAddressLabelText;
         public string PortLabelText => ProPresenterControlResoures.PortLabelText;
 
-        public string? IpAddress { get; set; }
-
-        public string? Port { get; set; }
+        public ProPresenterConnectModel ProPresenterConnectModel { get; set; }
 
         public string ConnectButtonText
         {
@@ -67,7 +68,7 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         {
             try
             {
-                if (string.IsNullOrEmpty(IpAddress))
+                if (string.IsNullOrEmpty(ProPresenterConnectModel.IpAddress))
                 {
                     await MessageBoxHelper
                         .GetFailedConnectionMessageBox(ProPresenterControlResoures.IpAddressIsEmptyFailMessage)
@@ -75,7 +76,7 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
                     return;
                 }
 
-                if (string.IsNullOrEmpty(Port))
+                if (ProPresenterConnectModel.Port == null)
                 {
                     await MessageBoxHelper
                         .GetFailedConnectionMessageBox(ProPresenterControlResoures.PortIsEmptyFailMessage)
@@ -83,11 +84,16 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
                     return;
                 }
 
-                _proPresenterService.SetProPresenterConnection(IpAddress, int.Parse(Port));
+                _proPresenterService.SetProPresenterConnection(
+                    ProPresenterConnectModel.IpAddress, ProPresenterConnectModel.Port.Value);
                 var response = await _proPresenterService.GetProPresenterInfoAsync();
 
-                IsConnected = true;
-                ConnectButtonText = ProPresenterControlResoures.DisconnectButtonText;
+                if (response != null)
+                {
+                    IsConnected = true;
+                    ConnectButtonText = ProPresenterControlResoures.DisconnectButtonText;
+                    ModelCacheHelper.SaveModelState(ProPresenterConnectModel);
+                }
             }
             catch (Exception ex)
             {
