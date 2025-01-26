@@ -22,24 +22,24 @@ namespace ProPresenter7WEB.DesktopApplication.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ProPresenterControlResoures {
+    internal class MessageBoxResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ProPresenterControlResoures() {
+        internal MessageBoxResources() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ProPresenter7WEB.DesktopApplication.Properties.ProPresenterControlResoures", typeof(ProPresenterControlResoures).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ProPresenter7WEB.DesktopApplication.Properties.MessageBoxResources", typeof(MessageBoxResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace ProPresenter7WEB.DesktopApplication.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,56 +61,20 @@ namespace ProPresenter7WEB.DesktopApplication.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect.
+        ///   Looks up a localized string similar to Fail Connection.
         /// </summary>
-        public static string ConnectButtonText {
+        internal static string FailConnectionTitle {
             get {
-                return ResourceManager.GetString("ConnectButtonText", resourceCulture);
+                return ResourceManager.GetString("FailConnectionTitle", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disconnect.
+        ///   Looks up a localized string similar to Ok.
         /// </summary>
-        public static string DisconnectButtonText {
+        internal static string OkButtonText {
             get {
-                return ResourceManager.GetString("DisconnectButtonText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;Ip Address&apos; cannot be empty..
-        /// </summary>
-        public static string IpAddressIsEmptyFailMessage {
-            get {
-                return ResourceManager.GetString("IpAddressIsEmptyFailMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to IP Address.
-        /// </summary>
-        public static string IpAddressLabelText {
-            get {
-                return ResourceManager.GetString("IpAddressLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;Port&apos; cannot be empty..
-        /// </summary>
-        public static string PortIsEmptyFailMessage {
-            get {
-                return ResourceManager.GetString("PortIsEmptyFailMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Port.
-        /// </summary>
-        public static string PortLabelText {
-            get {
-                return ResourceManager.GetString("PortLabelText", resourceCulture);
+                return ResourceManager.GetString("OkButtonText", resourceCulture);
             }
         }
     }

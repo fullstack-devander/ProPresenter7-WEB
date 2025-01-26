@@ -9,6 +9,7 @@
         MinWidth="875" MinHeight="215"
         x:Class="ProPresenter7WEB.DesktopApplication.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+        WindowStartupLocation="CenterScreen"
         Icon="/Assets/avalonia-logo.ico"
         Title="ProPresenter Web UI Server">
     <Window.Styles>

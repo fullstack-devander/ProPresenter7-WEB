@@ -1,5 +1,4 @@
-﻿using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
+﻿using ProPresenter7WEB.DesktopApplication.Helpers;
 using ProPresenter7WEB.DesktopApplication.Properties;
 using ProPresenter7WEB.Service;
 using System;
@@ -21,6 +20,10 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
 
         public string IpAddressLabelText => ProPresenterControlResoures.IpAddressLabelText;
         public string PortLabelText => ProPresenterControlResoures.PortLabelText;
+
+        public string? IpAddress { get; set; }
+
+        public string? Port { get; set; }
 
         public string ConnectButtonText
         {
@@ -48,10 +51,6 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
             }
         }
 
-        public string? IpAddress { get; set; }
-
-        public string? Port { get; set; }
-
         public async void ClickConnectButton()
         {
             if (_isConnected)
@@ -70,13 +69,17 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
             {
                 if (string.IsNullOrEmpty(IpAddress))
                 {
-                    await ShowFailedConnectionMessageBoxAsync(ProPresenterControlResoures.IpAddressIsEmptyFailMessage);
+                    await MessageBoxHelper
+                        .GetFailedConnectionMessageBox(ProPresenterControlResoures.IpAddressIsEmptyFailMessage)
+                        .ShowAsync();
                     return;
                 }
 
                 if (string.IsNullOrEmpty(Port))
                 {
-                    await ShowFailedConnectionMessageBoxAsync(ProPresenterControlResoures.PortIsEmptyFailMessage);
+                    await MessageBoxHelper
+                        .GetFailedConnectionMessageBox(ProPresenterControlResoures.PortIsEmptyFailMessage)
+                        .ShowAsync();
                     return;
                 }
 
@@ -88,7 +91,9 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
             }
             catch (Exception ex)
             {
-                await ShowFailedConnectionMessageBoxAsync(ex.Message);
+                await MessageBoxHelper
+                    .GetFailedConnectionMessageBox(ex.Message)
+                    .ShowAsync();
             }
         }
 
@@ -96,13 +101,6 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         {
             IsConnected = false;
             ConnectButtonText = ProPresenterControlResoures.ConnectButtonText;
-        }
-
-        private async static Task ShowFailedConnectionMessageBoxAsync(string message)
-        {
-            await MessageBoxManager
-                .GetMessageBoxStandard(ProPresenterControlResoures.FailConnectMsgBoxTitle, message, ButtonEnum.Ok)
-                .ShowAsync();
         }
     }
 }
