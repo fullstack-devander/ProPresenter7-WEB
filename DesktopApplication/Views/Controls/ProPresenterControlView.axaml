@@ -1,0 +1,63 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:ProPresenter7WEB.DesktopApplication.ViewModels.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:ProPresenterControlViewModel"
+             x:Class="ProPresenter7WEB.DesktopApplication.Views.Controls.ProPresenterControlView">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel 
+            Grid.Column="0" 
+            Margin="4,0">
+            <StackPanel 
+                Margin="0,0,0,4"
+                IsEnabled="{Binding !IsConnected}">
+                <Label Content="{Binding IpAddressLabelText}" />
+                <TextBox
+                    Width="250" 
+                    HorizontalAlignment="Left"
+                    Text="{Binding ProPresenterConnectModel.IpAddress}"/>
+            </StackPanel>
+
+            <StackPanel
+                Margin="0,0,0,4"
+                IsEnabled="{Binding !IsConnected}">
+                <Label Content="{Binding PortLabelText}" />
+                <TextBox 
+                    Width="250" 
+                    HorizontalAlignment="Left"
+                    Text="{Binding ProPresenterConnectModel.Port}"/>
+            </StackPanel>
+
+            <Button
+                Content="{Binding ConnectButtonText}"
+                Margin="0,8"
+                Command="{Binding ClickConnectButton}"/>
+        </StackPanel>
+        
+        <StackPanel
+            Grid.Column="1" 
+            Margin="4,0" 
+            IsEnabled="False">
+            <StackPanel Margin="0,0,0,4">
+                <Label Content="Playlist" />
+                <ComboBox 
+                    Width="250" 
+                    HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <StackPanel Margin="0,0,0,4">
+                <Label Content="Presentation" />
+                <ComboBox 
+                    Width="250" 
+                    HorizontalAlignment="Left" />
+            </StackPanel>    
+        </StackPanel>
+    </Grid>
+</UserControl>
