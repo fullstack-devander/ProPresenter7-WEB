@@ -6,6 +6,7 @@ using ProPresenter7WEB.DesktopApplication.ViewModels;
 using ProPresenter7WEB.DesktopApplication.ViewModels.Controls;
 using ProPresenter7WEB.DesktopApplication.Views;
 using ProPresenter7WEB.Service;
+using System.Reflection;
 
 namespace ProPresenter7WEB.DesktopApplication
 {
@@ -14,7 +15,7 @@ namespace ProPresenter7WEB.DesktopApplication
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddApplicationPart(typeof(Program).Assembly)
+                .AddApplicationPart(Assembly.Load("ProPresenter7WEB.WebServerApplication"))
                 .AddControllersAsServices();
 
             services.AddCors(options =>

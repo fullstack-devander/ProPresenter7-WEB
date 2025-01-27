@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
@@ -21,9 +22,11 @@ namespace ProPresenter7WEB.DesktopApplication
 
         public static IServiceProvider? Services { get; private set; }
 
+        public static WebApplication? WebApplication { get; private set; }
+
         public override void OnFrameworkInitializationCompleted()
         {
-            var webApp = WebAppBuilder.CreateBuilder(Array.Empty<string>())
+            WebApplication = WebAppBuilder.CreateBuilder(Array.Empty<string>())
                 .ConfigureWebApplicationBuilder(builder =>
                 {
                     builder.Logging.ClearProviders();
@@ -32,9 +35,9 @@ namespace ProPresenter7WEB.DesktopApplication
                 .ConfigureServices(Startup.ConfigureServices)
                 .Build();
 
-            Startup.Configure(webApp, webApp.Environment);
+            Startup.Configure(WebApplication, WebApplication.Environment);
 
-            Services = webApp.Services;
+            Services = WebApplication.Services;
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -43,7 +46,6 @@ namespace ProPresenter7WEB.DesktopApplication
                 DisableAvaloniaDataAnnotationValidation();
 
                 var mainWindow = Services.GetRequiredService<MainWindow>();
-                mainWindow.WebApplication = webApp;
                 desktop.MainWindow = mainWindow;
             }
 

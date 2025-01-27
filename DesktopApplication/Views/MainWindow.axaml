@@ -23,7 +23,11 @@
                 <ColumnDefinition Width="1.7*" />    
             </Grid.ColumnDefinitions>
             
-            <HeaderedContentControl Grid.Column="0" Margin="2" Padding="16" Header="Web Server">
+            <HeaderedContentControl 
+                Grid.Column="0" 
+                Margin="2" 
+                Padding="16" 
+                Header="{Binding WebServerTitle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="28" />
@@ -71,9 +75,8 @@
                     <Button
                         Grid.Row="2"
                         Grid.ColumnSpan="2"
-                        x:Name="StartServerButton"
-                        Click="OnStartServerClick"
-                        Content="Start Server"
+                        Command="{Binding OnClickStartButton}"
+                        Content="{Binding StartServerButtonText}"
                         Margin="16"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center" />
@@ -84,7 +87,7 @@
                 Grid.Column="1" 
                 Margin="2" 
                 BorderThickness="1" 
-                Header="ProPresenter Settings">
+                Header="{Binding ProPresenterSettingsTitle}">
                 <c:ProPresenterControlView />
             </HeaderedContentControl>
         </Grid>
