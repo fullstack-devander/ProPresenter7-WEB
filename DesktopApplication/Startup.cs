@@ -22,6 +22,7 @@ namespace ProPresenter7WEB.DesktopApplication
                     policy.WithOrigins("http://localhost:50890")));
 
             services.AddHttpClient();
+            services.AddLogging();
 
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainWindowViewModel>();

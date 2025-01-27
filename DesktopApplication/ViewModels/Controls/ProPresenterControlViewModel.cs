@@ -1,4 +1,5 @@
-﻿using ProPresenter7WEB.DesktopApplication.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using ProPresenter7WEB.DesktopApplication.Helpers;
 using ProPresenter7WEB.DesktopApplication.Models;
 using ProPresenter7WEB.DesktopApplication.Properties;
 using ProPresenter7WEB.Service;
@@ -10,12 +11,16 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
     public class ProPresenterControlViewModel : ViewModelBase
     {
         private readonly IProPresenterService _proPresenterService;
+        private readonly ILogger _logger;
 
         private bool _isConnected;
         private string _connectButtonText = ProPresenterControlResoures.ConnectButtonText;
 
-        public ProPresenterControlViewModel(IProPresenterService proPresenterService)
+        public ProPresenterControlViewModel(
+            ILogger<ProPresenterControlViewModel> logger,
+            IProPresenterService proPresenterService)
         {
+            _logger = logger;
             _proPresenterService = proPresenterService;
             ProPresenterConnectModel = ModelCacheHelper
                 .ReadModelState<ProPresenterConnectModel>() ?? new ProPresenterConnectModel();
@@ -86,17 +91,24 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
 
                 _proPresenterService.SetProPresenterConnection(
                     ProPresenterConnectModel.IpAddress, ProPresenterConnectModel.Port.Value);
-                var response = await _proPresenterService.GetProPresenterInfoAsync();
+                var proPresenterInfo = await _proPresenterService.GetProPresenterInfoAsync();
 
-                if (response != null)
+                if (proPresenterInfo != null)
                 {
                     IsConnected = true;
                     ConnectButtonText = ProPresenterControlResoures.DisconnectButtonText;
+
+                    _logger.LogInformation(
+                        $"Connection to ProPresenter http://{ProPresenterConnectModel.IpAddress}:{ProPresenterConnectModel.Port} established.");
+                    _logger.LogInformation(
+                        $"ProPresenter {proPresenterInfo.ApiVersion} is running on {proPresenterInfo.Platform}.");
+
                     ModelCacheHelper.SaveModelState(ProPresenterConnectModel);
                 }
             }
             catch (Exception ex)
             {
+                _logger.LogWarning($"Cannot establish connection: {ex.Message}");
                 await MessageBoxHelper
                     .GetFailedConnectionMessageBox(ex.Message)
                     .ShowAsync();
@@ -106,6 +118,8 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         private void Disconnect()
         {
             IsConnected = false;
+
+            _logger.LogInformation("Disconnected from ProPresenter.");
             ConnectButtonText = ProPresenterControlResoures.ConnectButtonText;
         }
     }
