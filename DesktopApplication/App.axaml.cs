@@ -3,6 +3,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NLog.Web;
 using ProPresenter7WEB.DesktopApplication.Views;
 using ProPresenter7WEB.WebServerApplication.Builder;
 using System;
@@ -22,6 +24,11 @@ namespace ProPresenter7WEB.DesktopApplication
         public override void OnFrameworkInitializationCompleted()
         {
             var webApp = WebAppBuilder.CreateBuilder(Array.Empty<string>())
+                .ConfigureWebApplicationBuilder(builder =>
+                {
+                    builder.Logging.ClearProviders();
+                    builder.Host.UseNLog();
+                })
                 .ConfigureServices(Startup.ConfigureServices)
                 .Build();
 

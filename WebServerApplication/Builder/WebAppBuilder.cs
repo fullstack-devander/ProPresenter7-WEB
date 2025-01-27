@@ -16,6 +16,15 @@ namespace ProPresenter7WEB.WebServerApplication.Builder
             return new WebAppBuilder(WebApplication.CreateBuilder(args));
         }
 
+        public IWebAppBuilder ConfigureWebApplicationBuilder(Action<AspNetWebApplicationBuilder> configureWebApplicationBuilder)
+        {
+            ArgumentNullException.ThrowIfNull(configureWebApplicationBuilder);
+
+            configureWebApplicationBuilder(_webApplicationBuilder);
+
+            return this;
+        }
+
         public IWebAppBuilder ConfigureServices(Action<IServiceCollection> configureServices)
         {
             ArgumentNullException.ThrowIfNull(configureServices);
