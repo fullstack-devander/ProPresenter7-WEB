@@ -4,8 +4,8 @@ namespace ProPresenter7WEB.Service
 {
     public interface IProPresenterService
     {
-        void SetProPresenterConnection(string address, int port);
+        string? ApiAddress { get; }
 
-        Task<ProPresenterInfo> GetProPresenterInfoAsync();
+        void SetApiAddress(string address, int port);
     }
 }

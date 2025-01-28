@@ -11,6 +11,7 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
     public class ProPresenterControlViewModel : ViewModelBase
     {
         private readonly IProPresenterService _proPresenterService;
+        private readonly IProPresenterInfoService _proPresenterInfoService;
         private readonly ILogger _logger;
 
         private bool _isConnected;
@@ -18,10 +19,13 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
 
         public ProPresenterControlViewModel(
             ILogger<ProPresenterControlViewModel> logger,
-            IProPresenterService proPresenterService)
+            IProPresenterService proPresenterService,
+            IProPresenterInfoService proPresenterInfoService)
         {
             _logger = logger;
             _proPresenterService = proPresenterService;
+            _proPresenterInfoService = proPresenterInfoService;
+
             ProPresenterConnectModel = ModelCacheHelper
                 .ReadModelState<ProPresenterConnectModel>() ?? new ProPresenterConnectModel();
         }
@@ -89,9 +93,9 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
                     return;
                 }
 
-                _proPresenterService.SetProPresenterConnection(
+                _proPresenterService.SetApiAddress(
                     ProPresenterConnectModel.IpAddress, ProPresenterConnectModel.Port.Value);
-                var proPresenterInfo = await _proPresenterService.GetProPresenterInfoAsync();
+                var proPresenterInfo = await _proPresenterInfoService.GetProPresenterInfoAsync();
 
                 if (proPresenterInfo != null)
                 {
@@ -99,7 +103,7 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
                     ConnectButtonText = ProPresenterControlResoures.DisconnectButtonText;
 
                     _logger.LogInformation(
-                        $"Connection to ProPresenter http://{ProPresenterConnectModel.IpAddress}:{ProPresenterConnectModel.Port} established.");
+                        $"Connection to ProPresenter {_proPresenterService.ApiAddress} established.");
                     _logger.LogInformation(
                         $"ProPresenter {proPresenterInfo.ApiVersion} is running on {proPresenterInfo.Platform}.");
 
