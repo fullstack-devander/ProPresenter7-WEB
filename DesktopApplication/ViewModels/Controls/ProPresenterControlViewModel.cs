@@ -17,10 +17,10 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         private readonly IProPresenterService _proPresenterService;
         private readonly IProPresenterInfoService _proPresenterInfoService;
         private readonly IPlaylistService _playlistService;
+        private readonly IPresentationStorageService _presentationStorageService;
         private readonly ILogger _logger;
 
         private bool _isConnected;
-        private bool _isPresentationSelectAvaliable;
         private bool _isSelectedPresentationApplied;
         private string _connectButtonText = ProPresenterControlResoures.ConnectButtonText;
         private string _applyButtonText = ProPresenterControlResoures.ApplyButtonText;
@@ -33,12 +33,14 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
             ILogger<ProPresenterControlViewModel> logger,
             IProPresenterService proPresenterService,
             IProPresenterInfoService proPresenterInfoService,
-            IPlaylistService playlistService)
+            IPlaylistService playlistService,
+            IPresentationStorageService presentationStorageService)
         {
             _logger = logger;
             _proPresenterService = proPresenterService;
             _proPresenterInfoService = proPresenterInfoService;
             _playlistService = playlistService;
+            _presentationStorageService = presentationStorageService;
 
             ProPresenterConnectModel = ModelCacheHelper
                 .ReadModelState<ProPresenterConnectModel>() ?? new ProPresenterConnectModel();
@@ -68,24 +70,14 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         public bool IsConnected
         {
             get => _isConnected;
-            set
-            {
-                SetProperty(ref _isConnected, value);
-                OnPropertyChanged(nameof(IsPresentationSelectionEnabled));
-            }
+            set => SetProperty(ref _isConnected, value);
         }
 
         public bool IsSelectedPresentationApplied
         {
             get => _isSelectedPresentationApplied;
-            set
-            {
-                SetProperty(ref _isSelectedPresentationApplied, value);
-                OnPropertyChanged(nameof(IsPresentationSelectionEnabled));
-            }
+            set => SetProperty(ref _isSelectedPresentationApplied, value);
         }
-
-        public bool IsPresentationSelectionEnabled => IsConnected && !_isSelectedPresentationApplied;
 
         public ObservableCollection<Playlist>? Playlists
         {
@@ -130,24 +122,35 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
             }
         }
 
-        public void ClickApplyButton()
+        public async void ClickApplyButton()
         {
             // TODO Implement storing selected presentation uuid
             if (!IsSelectedPresentationApplied)
             {
-                IsSelectedPresentationApplied = true;
-                ApplyButtonText = ProPresenterControlResoures.UpdateButtonText;
+                await ApplySelectedPresentation();
             }
             else
             {
+                _presentationStorageService.RemovePresentationUuid();
                 IsSelectedPresentationApplied = false;
                 ApplyButtonText = ProPresenterControlResoures.ApplyButtonText;
             }
         }
 
-        private void ChangeSelectedPresentation()
+        private async Task ApplySelectedPresentation()
         {
-            _isSelectedPresentationApplied = false;
+            if (SelectedPresentation == null)
+            {
+                await MessageBoxHelper
+                    .GetValidationFailedMessageBox(ProPresenterControlResoures.PresentationIsEmptyFailMessage)
+                    .ShowAsync();
+
+                return;
+            }
+
+            _presentationStorageService.SetPresentationUuid(SelectedPresentation.Uuid);
+            IsSelectedPresentationApplied = true;
+            ApplyButtonText = ProPresenterControlResoures.UpdateButtonText;
         }
 
         private async Task InitPlaylistsSourceAsync()
@@ -168,6 +171,11 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         {
             try
             {
+                if (SelectedPlaylist == null)
+                {
+                    return;
+                }
+
                 var playlistDetails = await _playlistService.GetPlayListDetailsAsync(SelectedPlaylist.Uuid);
                 Presentations = new ObservableCollection<PlaylistDetailsPresentation>(playlistDetails.Presentations);
                 SelectedPresentation = Presentations.First();
@@ -227,10 +235,15 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         private void Disconnect()
         {
             IsConnected = false;
+            SelectedPlaylist = null;
+            SelectedPresentation = null;
+            _presentationStorageService.RemovePresentationUuid();
             IsSelectedPresentationApplied = false;
 
-            _logger.LogInformation("Disconnected from ProPresenter.");
+            ApplyButtonText = ProPresenterControlResoures.ApplyButtonText;
             ConnectButtonText = ProPresenterControlResoures.ConnectButtonText;
+
+            _logger.LogInformation("ProPresenter Server is Disconnected.");
         }
     }
 }

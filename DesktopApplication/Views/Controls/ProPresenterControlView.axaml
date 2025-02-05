@@ -43,10 +43,11 @@
         
         <StackPanel
             Grid.Column="1" 
-            Margin="4,0">
+            Margin="4,0"
+            IsEnabled="{Binding IsConnected}">
             <StackPanel 
                 Margin="0,0,0,4"
-                IsEnabled="{Binding IsPresentationSelectionEnabled}">
+                IsEnabled="{Binding !IsSelectedPresentationApplied}">
                 <Label Content="{Binding PlaylistLabelText}" />
                 <ComboBox 
                     Width="250" 
@@ -58,7 +59,7 @@
 
             <StackPanel
                 Margin="0,0,0,4"
-                IsEnabled="{Binding IsPresentationSelectionEnabled}">
+                IsEnabled="{Binding !IsSelectedPresentationApplied}">
                 <Label Content="{Binding PresentationLabelText}" />
                 <ComboBox 
                     Width="250" 

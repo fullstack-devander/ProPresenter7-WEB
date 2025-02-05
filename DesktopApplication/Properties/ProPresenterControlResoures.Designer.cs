@@ -106,6 +106,15 @@ namespace ProPresenter7WEB.DesktopApplication.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Playlist is not selected..
+        /// </summary>
+        public static string PlaylistIsEmptyFailMessage {
+            get {
+                return ResourceManager.GetString("PlaylistIsEmptyFailMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Playlist.
         /// </summary>
         public static string PlaylistLabelText {
@@ -129,6 +138,15 @@ namespace ProPresenter7WEB.DesktopApplication.Properties {
         public static string PortLabelText {
             get {
                 return ResourceManager.GetString("PortLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presentation is not selected..
+        /// </summary>
+        public static string PresentationIsEmptyFailMessage {
+            get {
+                return ResourceManager.GetString("PresentationIsEmptyFailMessage", resourceCulture);
             }
         }
         

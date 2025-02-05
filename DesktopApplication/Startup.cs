@@ -30,6 +30,7 @@ namespace ProPresenter7WEB.DesktopApplication
             services.AddSingleton<ProPresenterControlViewModel>();
 
             services.AddSingleton<IProPresenterService, ProPresenterService>();
+            services.AddSingleton<IPresentationStorageService, PresentationStorageService>();
             services.AddScoped<IProPresenterInfoService, ProPresenterInfoService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<IPresentationService, PresentationService>();

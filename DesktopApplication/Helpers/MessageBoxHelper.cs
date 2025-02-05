@@ -15,6 +15,26 @@ namespace ProPresenter7WEB.DesktopApplication.Helpers
     {
         private const string ERROR_ICON = "avares://ProPresenter7WEB.DesktopApplication/Assets/error.ico";
 
+        public static IMsBox<string> GetValidationFailedMessageBox(string messageText)
+        {
+            return MessageBoxManager.GetMessageBoxCustom(new MessageBoxCustomParams
+            {
+                ContentTitle = MessageBoxResources.FailValidationTitle,
+                ContentMessage = messageText,
+                WindowIcon = new WindowIcon(
+                    new Bitmap(AssetLoader.Open(new Uri(ERROR_ICON)))),
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                CanResize = false,
+                SizeToContent = SizeToContent.Height,
+                MinWidth = 300,
+                MaxWidth = 800,
+                ButtonDefinitions = new List<ButtonDefinition>
+                {
+                    new ButtonDefinition{ Name = MessageBoxResources.OkButtonText },
+                },
+            });
+        }
+
         public static IMsBox<string> GetFailedConnectionMessageBox(string messageText)
         {
             return MessageBoxManager.GetMessageBoxCustom(new MessageBoxCustomParams

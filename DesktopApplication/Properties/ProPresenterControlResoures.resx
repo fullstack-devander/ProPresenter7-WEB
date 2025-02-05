@@ -132,6 +132,9 @@
   <data name="IpAddressLabelText" xml:space="preserve">
     <value>IP Address</value>
   </data>
+  <data name="PlaylistIsEmptyFailMessage" xml:space="preserve">
+    <value>Playlist is not selected.</value>
+  </data>
   <data name="PlaylistLabelText" xml:space="preserve">
     <value>Playlist</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="PortLabelText" xml:space="preserve">
     <value>Port</value>
+  </data>
+  <data name="PresentationIsEmptyFailMessage" xml:space="preserve">
+    <value>Presentation is not selected.</value>
   </data>
   <data name="PresentationLabelText" xml:space="preserve">
     <value>Presentation</value>

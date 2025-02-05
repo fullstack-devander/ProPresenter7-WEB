@@ -70,6 +70,15 @@ namespace ProPresenter7WEB.DesktopApplication.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fail Validation.
+        /// </summary>
+        internal static string FailValidationTitle {
+            get {
+                return ResourceManager.GetString("FailValidationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
         internal static string OkButtonText {
