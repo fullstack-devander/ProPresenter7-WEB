@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Apply</value>
+  </data>
   <data name="ConnectButtonText" xml:space="preserve">
     <value>Connect</value>
   </data>
@@ -129,10 +132,19 @@
   <data name="IpAddressLabelText" xml:space="preserve">
     <value>IP Address</value>
   </data>
+  <data name="PlaylistLabelText" xml:space="preserve">
+    <value>Playlist</value>
+  </data>
   <data name="PortIsEmptyFailMessage" xml:space="preserve">
     <value>'Port' cannot be empty.</value>
   </data>
   <data name="PortLabelText" xml:space="preserve">
     <value>Port</value>
+  </data>
+  <data name="PresentationLabelText" xml:space="preserve">
+    <value>Presentation</value>
+  </data>
+  <data name="UpdateButtonText" xml:space="preserve">
+    <value>Update</value>
   </data>
 </root>
