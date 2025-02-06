@@ -111,29 +111,25 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
 
         public async void ClickConnectButton()
         {
-            if (_isConnected)
+            if (IsConnected)
             {
                 Disconnect();
             }
             else
             {
                 await ConnectAsync();
-                await InitPlaylistsSourceAsync();
             }
         }
 
         public async void ClickApplyButton()
         {
-            // TODO Implement storing selected presentation uuid
             if (!IsSelectedPresentationApplied)
             {
                 await ApplySelectedPresentation();
             }
             else
             {
-                _presentationStorageService.RemovePresentationUuid();
-                IsSelectedPresentationApplied = false;
-                ApplyButtonText = ProPresenterControlResoures.ApplyButtonText;
+                CancelSelectedPresentation();
             }
         }
 
@@ -141,6 +137,8 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
         {
             if (SelectedPresentation == null)
             {
+                _logger.LogWarning("Presentation is not selected when clicked \"Apply\" button.");
+
                 await MessageBoxHelper
                     .GetValidationFailedMessageBox(ProPresenterControlResoures.PresentationIsEmptyFailMessage)
                     .ShowAsync();
@@ -151,6 +149,19 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
             _presentationStorageService.SetPresentationUuid(SelectedPresentation.Uuid);
             IsSelectedPresentationApplied = true;
             ApplyButtonText = ProPresenterControlResoures.UpdateButtonText;
+
+            _logger.LogInformation("Presentation {0} is applied to use on Web UI.", SelectedPresentation.Uuid);
+        }
+
+        private void CancelSelectedPresentation()
+        {
+            var selectedPresentationUuid = _presentationStorageService.GetPresentationUuid();
+            
+            _presentationStorageService.RemovePresentationUuid();
+            IsSelectedPresentationApplied = false;
+            ApplyButtonText = ProPresenterControlResoures.ApplyButtonText;
+
+            _logger.LogInformation("Presentation {0} is cancelled to use on Web UI.", selectedPresentationUuid);
         }
 
         private async Task InitPlaylistsSourceAsync()
@@ -160,10 +171,13 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
                 var playlists = await _playlistService.GetPlaylistsAsync();
                 Playlists = new ObservableCollection<Playlist>(playlists);
                 SelectedPlaylist = Playlists.First();
+                
+                _logger.LogInformation("Initialized playlist list with {0} items. Selected playlist uuid: {1}.", 
+                    playlists.Count(), SelectedPlaylist.Uuid);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Cannot initialize playlists: {ex.Message}");
+                _logger.LogWarning($"Cannot get playlist list: {ex.Message}");
             }
         }
 
@@ -173,16 +187,20 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
             {
                 if (SelectedPlaylist == null)
                 {
+                    _logger.LogWarning("Playlist is not selected when presentations is initializing.");
                     return;
                 }
 
                 var playlistDetails = await _playlistService.GetPlayListDetailsAsync(SelectedPlaylist.Uuid);
                 Presentations = new ObservableCollection<PlaylistDetailsPresentation>(playlistDetails.Presentations);
                 SelectedPresentation = Presentations.First();
+
+                _logger.LogInformation("Initialized presentation lists with {0} items. Selected presentation uuid: {1}.",
+                    playlistDetails.Presentations.Count(), SelectedPresentation.Uuid);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Cannot initialize presentations: {ex.Message}");
+                _logger.LogWarning($"Cannot get presentation list: {ex.Message}");
             }
         }
 
@@ -195,6 +213,9 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
                     await MessageBoxHelper
                         .GetFailedConnectionMessageBox(ProPresenterControlResoures.IpAddressIsEmptyFailMessage)
                         .ShowAsync();
+
+                    _logger.LogWarning("IP address is empty when connecting to ProPresenter.");
+
                     return;
                 }
 
@@ -203,6 +224,9 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
                     await MessageBoxHelper
                         .GetFailedConnectionMessageBox(ProPresenterControlResoures.PortIsEmptyFailMessage)
                         .ShowAsync();
+
+                    _logger.LogWarning("Port is empty when connecting to ProPresenter.");
+
                     return;
                 }
 
@@ -220,15 +244,18 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
                     _logger.LogInformation(
                         $"ProPresenter {proPresenterInfo.ApiVersion} is running on {proPresenterInfo.Platform}.");
 
+                    await InitPlaylistsSourceAsync();
+
                     ModelCacheHelper.SaveModelState(ProPresenterConnectModel);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Cannot establish connection: {ex.Message}");
                 await MessageBoxHelper
                     .GetFailedConnectionMessageBox(ex.Message)
                     .ShowAsync();
+
+                _logger.LogWarning($"Cannot establish connection: {ex.Message}");
             }
         }
 
@@ -243,7 +270,7 @@ namespace ProPresenter7WEB.DesktopApplication.ViewModels.Controls
             ApplyButtonText = ProPresenterControlResoures.ApplyButtonText;
             ConnectButtonText = ProPresenterControlResoures.ConnectButtonText;
 
-            _logger.LogInformation("ProPresenter Server is Disconnected.");
+            _logger.LogInformation("Disconnect ProPresenter server.");
         }
     }
 }
