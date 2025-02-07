@@ -1,17 +1,21 @@
-﻿using ProPresenter7WEB.Core;
+﻿using AutoMapper;
+using ProPresenter7WEB.Core;
 using System.Net.Http.Json;
 
 namespace ProPresenter7WEB.Service
 {
     public class ProPresenterInfoService : IProPresenterInfoService
     {
+        private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
         private readonly IProPresenterService _proPresenterService;
 
         public ProPresenterInfoService(
+            IMapper mapper,
             HttpClient httpClient, 
             IProPresenterService proPresenterService)
         {
+            _mapper = mapper;
             _httpClient = httpClient;
             _proPresenterService = proPresenterService;
         }
@@ -29,14 +33,7 @@ namespace ProPresenter7WEB.Service
                 throw new InvalidOperationException("Response cannot be deserialized.");
             }
 
-            return new ProPresenterInfo
-            {
-                ApiVersion = contract.ApiVersion,
-                HostDescription = contract.HostDescription,
-                Name = contract.Name,
-                OsVersion = contract.OsVersion,
-                Platform = contract.Platform,
-            };
+            return _mapper.Map<ProPresenterInfo>(contract);
         }
     }
 }

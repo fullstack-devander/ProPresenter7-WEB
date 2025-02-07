@@ -1,17 +1,21 @@
-﻿using ProPresenter7WEB.Core;
+﻿using AutoMapper;
+using ProPresenter7WEB.Core;
 using System.Net.Http.Json;
 
 namespace ProPresenter7WEB.Service
 {
     public class PlaylistService : IPlaylistService
     {
+        private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
         private readonly IProPresenterService _proPresenterService;
 
         public PlaylistService(
+            IMapper mapper,
             HttpClient httpClient,
             IProPresenterService proPresenterService)
         {
+            _mapper = mapper;
             _httpClient = httpClient;
             _proPresenterService = proPresenterService;
         }
@@ -47,20 +51,7 @@ namespace ProPresenter7WEB.Service
                 throw new InvalidOperationException($"No playlist details was found with uuid {uuid}.");
             }
 
-            var playlistDetails = new PlaylistDetails
-            {
-                Uuid = contract.Id.Uuid,
-                Name = contract.Id.Name,
-                Presentations = contract.Items
-                    .Where(item => item.Type == Contracts.PlaylistDetailsItemTypeEnum.Presentation)
-                    .Select(item => new PlaylistDetailsPresentation
-                    {
-                        Uuid = item.Id.Uuid,
-                        Name = item.Id.Name,
-                    }),
-            };
-
-            return playlistDetails;
+            return _mapper.Map<PlaylistDetails>(contract);
         }
 
         private IEnumerable<Playlist> FilterPlaylists(IEnumerable<Contracts.Playlist> contracts)
@@ -71,11 +62,7 @@ namespace ProPresenter7WEB.Service
             {
                 if (contract.FieldType == Contracts.PlaylistFieldTypeEnum.Playlist)
                 {
-                    playlists.Add(new Playlist
-                    {
-                        Uuid = contract.Id.Uuid,
-                        Name = contract.Id.Name,
-                    });
+                    playlists.Add(_mapper.Map<Playlist>(contract));
                 }
                 else
                 {

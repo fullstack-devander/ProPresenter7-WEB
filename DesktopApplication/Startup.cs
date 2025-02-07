@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProPresenter7WEB.DesktopApplication.Factories;
 using ProPresenter7WEB.DesktopApplication.ViewModels;
 using ProPresenter7WEB.DesktopApplication.ViewModels.Controls;
 using ProPresenter7WEB.DesktopApplication.Views;
@@ -28,6 +30,8 @@ namespace ProPresenter7WEB.DesktopApplication
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<ProPresenterControlViewModel>();
+            services.AddSingleton<IAutoMapperFactory, AutoMapperFactory>();
+            services.AddSingleton(services => services.GetRequiredService<IAutoMapperFactory>().Create());
 
             services.AddSingleton<IProPresenterService, ProPresenterService>();
             services.AddSingleton<IPresentationStorageService, PresentationStorageService>();
