@@ -36,28 +36,43 @@
             </StackPanel>
 
             <Button
-                Content="{Binding ConnectButtonText}"
                 Margin="0,8"
+                Content="{Binding ConnectButtonText}"
                 Command="{Binding ClickConnectButton}"/>
         </StackPanel>
         
         <StackPanel
             Grid.Column="1" 
-            Margin="4,0" 
-            IsEnabled="False">
-            <StackPanel Margin="0,0,0,4">
-                <Label Content="Playlist" />
+            Margin="4,0"
+            IsEnabled="{Binding IsConnected}">
+            <StackPanel 
+                Margin="0,0,0,4"
+                IsEnabled="{Binding !IsSelectedPresentationApplied}">
+                <Label Content="{Binding PlaylistLabelText}" />
                 <ComboBox 
                     Width="250" 
-                    HorizontalAlignment="Left" />
+                    HorizontalAlignment="Left"
+                    ItemsSource="{Binding Playlists}"
+                    SelectedItem="{Binding SelectedPlaylist}"
+                    DisplayMemberBinding="{Binding Name}"/>
             </StackPanel>
 
-            <StackPanel Margin="0,0,0,4">
-                <Label Content="Presentation" />
+            <StackPanel
+                Margin="0,0,0,4"
+                IsEnabled="{Binding !IsSelectedPresentationApplied}">
+                <Label Content="{Binding PresentationLabelText}" />
                 <ComboBox 
                     Width="250" 
-                    HorizontalAlignment="Left" />
-            </StackPanel>    
+                    HorizontalAlignment="Left"
+                    ItemsSource="{Binding Presentations}"
+                    SelectedItem="{Binding SelectedPresentation}"
+                    DisplayMemberBinding="{Binding Name}"/>
+            </StackPanel>
+
+            <Button
+                Margin="0,8"
+                Content="{Binding ApplyButtonText}"
+                Command="{Binding ClickApplyButton}"/>
         </StackPanel>
     </Grid>
 </UserControl>

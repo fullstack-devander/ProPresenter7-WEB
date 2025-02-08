@@ -61,6 +61,15 @@ namespace ProPresenter7WEB.DesktopApplication.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        public static string ApplyButtonText {
+            get {
+                return ResourceManager.GetString("ApplyButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect.
         /// </summary>
         public static string ConnectButtonText {
@@ -97,6 +106,24 @@ namespace ProPresenter7WEB.DesktopApplication.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Playlist is not selected..
+        /// </summary>
+        public static string PlaylistIsEmptyFailMessage {
+            get {
+                return ResourceManager.GetString("PlaylistIsEmptyFailMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playlist.
+        /// </summary>
+        public static string PlaylistLabelText {
+            get {
+                return ResourceManager.GetString("PlaylistLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;Port&apos; cannot be empty..
         /// </summary>
         public static string PortIsEmptyFailMessage {
@@ -111,6 +138,33 @@ namespace ProPresenter7WEB.DesktopApplication.Properties {
         public static string PortLabelText {
             get {
                 return ResourceManager.GetString("PortLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presentation is not selected..
+        /// </summary>
+        public static string PresentationIsEmptyFailMessage {
+            get {
+                return ResourceManager.GetString("PresentationIsEmptyFailMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presentation.
+        /// </summary>
+        public static string PresentationLabelText {
+            get {
+                return ResourceManager.GetString("PresentationLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        public static string UpdateButtonText {
+            get {
+                return ResourceManager.GetString("UpdateButtonText", resourceCulture);
             }
         }
     }

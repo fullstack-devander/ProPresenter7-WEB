@@ -120,6 +120,9 @@
   <data name="FailConnectionTitle" xml:space="preserve">
     <value>Fail Connection</value>
   </data>
+  <data name="FailValidationTitle" xml:space="preserve">
+    <value>Fail Validation</value>
+  </data>
   <data name="OkButtonText" xml:space="preserve">
     <value>Ok</value>
   </data>

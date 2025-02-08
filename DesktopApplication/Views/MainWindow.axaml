@@ -5,11 +5,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="875" d:DesignHeight="250"
-        Width="875" Height="250"
+        Width="875" Height="215"
         MinWidth="875" MinHeight="215"
         x:Class="ProPresenter7WEB.DesktopApplication.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         WindowStartupLocation="CenterScreen"
+        CanResize="False"
         Icon="/Assets/avalonia-logo.ico"
         Title="ProPresenter Web UI Server">
     <Window.Styles>
