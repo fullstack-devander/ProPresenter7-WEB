@@ -1,18 +1,18 @@
-// TODO: Think to move all methods into a class
+import { Presentation, Slide } from '../core';
 
 //const apiUrl = import.meta.env.VITE_API_URL;
 
-export async function getPresentationDetails(uuid: any) {
+export async function getPresentationDetails(): Promise<Presentation> {
     // TODO: Return inforamtion about a presentation (title, slides).
     throw new Error("Not implemented");
 }
 
-export function getThumbnail(presentationUuid: any, slideIndex: any) {
+export function getThumbnail(presentationUuid: any, slideIndex: any): string {
     // TODO: Return image of a slide.
     throw new Error("Not implemented");
 }
 
-export async function getActiveSlideIndex() {
+export async function getActiveSlideIndex(): Promise<Slide> {
     // TODO: Return index of an active slide.
     throw new Error("Not implemented");
 }
