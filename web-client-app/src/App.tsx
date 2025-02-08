@@ -1,4 +1,5 @@
 import './App.css'
+import { Button } from 'primereact/button';
 
 function App() {
 
@@ -7,6 +8,7 @@ function App() {
     return (
         <>
             <h1>Test Application</h1>
+            <Button label="Test" />
         </>
     );
 }
