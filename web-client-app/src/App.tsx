@@ -2,12 +2,7 @@ import './App.css'
 
 function App() {
 
-    fetch('http://localhost:5000/api/presentation')
-        .then(res => res.json())
-        .then(res => {
-            console.log("Data received from server");
-            console.log(res);
-        });
+    console.log(import.meta.env.VITE_API_URL);
 
     return (
         <>
