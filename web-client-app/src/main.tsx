@@ -5,6 +5,8 @@ import App from './App.tsx'
 import { PrimeReactProvider } from 'primereact/api';
 
 import "primereact/resources/themes/lara-dark-green/theme.css"
+import 'primeicons/primeicons.css';
+
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
