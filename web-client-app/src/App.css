@@ -1,42 +1,87 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body {
+    overflow-x: hidden;
+    background: var(--surface-ground);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.playlist-panel {
+    display: flex;
+    padding: 0 16px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.p-dropdown {
+    width: 100%;
+    margin: 8px 0;
 }
 
-.card {
-  padding: 2em;
+label {
+    width: 100%;
+    margin: 0 8px;
+    font-size: 0.7rem;
+    color: var(--bluegray-100);
 }
 
-.read-the-docs {
-  color: #888;
+.p-sidebar-header {
+    padding-bottom: 0;
+}
+
+.dropdown-control {
+    width: 100%;
+    margin: 0 8px;
+}
+
+.p-panel-content {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.slide {
+    margin: 8px 8px;
+    border: 3px solid #1f2937;
+    border-radius: 2px;
+    display: inline-flex;
+    padding: 2px;
+}
+
+    .slide:hover {
+        cursor: pointer;
+    }
+
+.active-slide {
+    border: 3px solid var(--green-700);
+    border-radius: 2px;
+}
+
+.slide-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 32px;
+    margin-bottom: 108px;
+}
+
+.p-button.p-button-lg {
+    padding: 16px 64px;
+    width: 100%;
+    margin: 8px;
+}
+
+.p-toolbar {
+    border-radius: 0;
+    border: 0;
+}
+
+.p-toolbar-group-center {
+    color: var(--text-color);
+    font-size: 2rem;
+    font-weight: 700;
 }
